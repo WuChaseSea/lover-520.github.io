@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="常用图表的绘制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="绘制柱状图">
+<meta property="og:url" content="http://example.com/2021/03/06/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="常用图表的绘制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Snipaste_2021-03-05_18-05-54.png">
+<meta property="article:published_time" content="2021-03-06T08:06:31.002Z">
+<meta property="article:modified_time" content="2021-03-06T08:16:26.571Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Snipaste_2021-03-05_18-05-54.png">
+
+
+<link rel="canonical" href="http://example.com/2021/03/06/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>绘制柱状图 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python%E5%B8%B8%E7%94%A8%E5%9B%BE%E8%A1%A8%E7%BB%98%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">Python常用图表绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%9F%B1%E7%8A%B6%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">分组柱状图</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/06/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          绘制柱状图
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-06 16:06:31 / 修改时间：16:16:26" itemprop="dateCreated datePublished" datetime="2021-03-06T16:06:31+08:00">2021-03-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>常用图表的绘制<a id="more"></a></p>
+<h1 id="Python常用图表绘制"><a href="#Python常用图表绘制" class="headerlink" title="Python常用图表绘制"></a>Python常用图表绘制</h1><h2 id="分组柱状图"><a href="#分组柱状图" class="headerlink" title="分组柱状图"></a>分组柱状图</h2><p>又称聚合柱状图，在同一轴上显示各个分组下不同的分类数据。</p>
+<p>假设我在一个名为all_result.xlsx文件中有如下数据：</p>
+<p><img src="/images/Snipaste_2021-03-05_18-05-54.png" alt="Snipaste_2021-03-05_18-05-54"></p>
+<p>这是我训练模型的一组结果，左边一列是使用的模型，第二列是初始情况下的结果，第三列是采用了预训练模型之后的结果，第四列是添加了SPP结构后的结果。那么我想采用分组柱状图更好的显示结果：</p>
+<ol>
+<li><p>读取xlsx文件中的数据</p>
+<p>xlrd库目前最新版本不支持读取xlsx文件，于是我就使用了openpyxl库。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> openpyxl</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_excel_data</span>(<span class="params">excel_path</span>):</span></span><br><span class="line">    excel_sheets = openpyxl.load_workbook(excel_path)  <span class="comment"># 获取工作表对象</span></span><br><span class="line">    </span><br><span class="line">    accuracy_sheet = excel_sheets[<span class="string">&#x27;accuracy&#x27;</span>]  <span class="comment"># 获取工作表中名为&#x27;accuracy&#x27;的工作簿</span></span><br><span class="line">    print(<span class="string">&quot;行数&quot;</span>, accuracy_sheet.max_row)</span><br><span class="line">    print(<span class="string">&quot;列数&quot;</span>, accuracy_sheet.max_column)</span><br><span class="line">    </span><br><span class="line">    label_list = []  <span class="comment"># 存放第一行的不同实验条件</span></span><br><span class="line">    xlabel_list = []  <span class="comment"># 存放不同的实验模型</span></span><br><span class="line">    origin_list, pretrained_list, spp_list = [], [], []  <span class="comment"># 分别存放不同条件下的结果，与xlabel_list长度相同</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i, row <span class="keyword">in</span> <span class="built_in">enumerate</span>(accuracy_sheet.rows):  <span class="comment"># 依次遍历表格的每一行</span></span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span>: <span class="comment"># 将第一行的数据作为标签</span></span><br><span class="line">            <span class="keyword">for</span> cell <span class="keyword">in</span> row:  <span class="comment"># 遍历一行中的每一个单元格</span></span><br><span class="line">                <span class="keyword">if</span> cell.value <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:  <span class="comment"># 判断该单元格中的内容是否为空</span></span><br><span class="line">                    label_list.append(cell.value)  <span class="comment"># 将内容加入到label_list中</span></span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># 依次遍历下面几行</span></span><br><span class="line">            <span class="keyword">for</span> j, cell <span class="keyword">in</span> <span class="built_in">enumerate</span>(row):</span><br><span class="line">                <span class="keyword">if</span> j == <span class="number">0</span>:  <span class="comment"># 如果是第一个单元格的话</span></span><br><span class="line">                    xlabel_list.append(cell.value)</span><br><span class="line">                <span class="keyword">elif</span> j == <span class="number">1</span>:</span><br><span class="line">                    <span class="keyword">if</span> cell.value <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">                        origin_list.append(<span class="number">0.0</span>)</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        origin_list.append(<span class="built_in">float</span>(cell.value))</span><br><span class="line">                <span class="keyword">elif</span> j == <span class="number">2</span>:</span><br><span class="line">                    <span class="keyword">if</span> cell.value <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">                        pretrained_list.append(<span class="number">0.0</span>)</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        pretrained_list.append(<span class="built_in">float</span>(cell.value))</span><br><span class="line">                <span class="keyword">elif</span> j == <span class="number">3</span>:</span><br><span class="line">                    <span class="keyword">if</span> cell.value <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">                        spp_list.append(<span class="number">0.0</span>)</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        spp_list.append(<span class="built_in">float</span>(cell.value))</span><br><span class="line">    print(<span class="string">&quot;不同的条件有：&quot;</span>, label_list)</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">&quot;实验模型有：&quot;</span>, xlabel_list)</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">&quot;origin条件下结果：&quot;</span>, origin_list)</span><br><span class="line">    print(<span class="string">&quot;pretrained条件下结果：&quot;</span>, pretrained_list)</span><br><span class="line">    print(<span class="string">&quot;spp条件下结果：&quot;</span>, spp_list)</span><br><span class="line">    <span class="keyword">return</span> label_list, xlabel_list, origin_list, pretrained_list, spp_list</span><br></pre></td></tr></table></figure></li>
+<li><p>数据绘图</p>
+<p>懒得采用matplotlib，直接使用了pandas库来进行绘图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">label_list, xlabel_list, origin_list, pretrained_list, spp_list = get_excel_data(excel_path=<span class="string">&#x27;all_result.xlsx&#x27;</span>)</span><br><span class="line">    <span class="comment"># 将原来几个列表合并成pandas中的DataFrame格式</span></span><br><span class="line">    data_excel = pd.DataFrame(origin_list, columns=[<span class="string">&#x27;origin&#x27;</span>], index=xlabel_list)</span><br><span class="line">    data_excel = pd.concat([data_excel, pd.DataFrame(pretrained_list, columns=[<span class="string">&#x27;pretrained&#x27;</span>], index=xlabel_list)], axis=<span class="number">1</span>)</span><br><span class="line">    data_excel = pd.concat([data_excel, pd.DataFrame(spp_list, columns=[<span class="string">&#x27;spp&#x27;</span>], index=xlabel_list)], axis=<span class="number">1</span>)</span><br><span class="line">    print(data_excel)</span><br><span class="line">    data_excel.plot(kind=<span class="string">&#x27;bar&#x27;</span>, style=<span class="string">&#x27;--o&#x27;</span>, figsize=(<span class="number">20</span>, <span class="number">15</span>), title=<span class="string">&quot;&quot;</span>)  <span class="comment"># 绘制分组柱状图</span></span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<p>上述文件及代码可参考<a target="_blank" rel="noopener" href="https://github.com/lover-520/lover-notes">https://github.com/lover-520/lover-notes</a></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/01/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/" rel="prev" title="hexo部署到GitHub">
+                  <i class="fa fa-chevron-left"></i> hexo部署到GitHub
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/06/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/" rel="next" title="遥感图像合并">
+                  遥感图像合并 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

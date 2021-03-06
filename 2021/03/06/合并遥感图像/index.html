@@ -23,21 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="在完成了整个项目之后，可以通过localhost在浏览器上查看效果，但那只是在本地上查看，可以尝试将代码部署到GitHub上从而别人也可以通过这个网址看到效果。">
+<meta name="description" content="从文件夹中读取小范围的遥感影像并合并成一大图">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo部署到GitHub">
-<meta property="og:url" content="http://example.com/2021/03/01/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/index.html">
+<meta property="og:title" content="遥感图像合并">
+<meta property="og:url" content="http://example.com/2021/03/06/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/index.html">
 <meta property="og:site_name" content="Lover">
-<meta property="og:description" content="在完成了整个项目之后，可以通过localhost在浏览器上查看效果，但那只是在本地上查看，可以尝试将代码部署到GitHub上从而别人也可以通过这个网址看到效果。">
+<meta property="og:description" content="从文件夹中读取小范围的遥感影像并合并成一大图">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-03-01T13:40:40.646Z">
-<meta property="article:modified_time" content="2021-03-01T13:40:19.760Z">
+<meta property="article:published_time" content="2021-03-06T08:06:39.810Z">
+<meta property="article:modified_time" content="2021-03-06T08:17:09.226Z">
 <meta property="article:author" content="ZM W">
-<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Picture">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2021/03/01/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/">
+<link rel="canonical" href="http://example.com/2021/03/06/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/">
 
 
 <script class="page-configurations">
@@ -49,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>hexo部署到GitHub | Lover</title>
+<title>遥感图像合并 | Lover</title>
   
 
 
@@ -162,7 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">条件准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">配置过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">3.</span> <span class="nav-text">问题解决</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F%E5%90%88%E5%B9%B6"><span class="nav-number">1.</span> <span class="nav-text">遥感图像合并</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">读取tiff影像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text">保存tiff影像</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -239,7 +239,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/01/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/06/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/pikaqiu.png">
@@ -252,7 +252,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          hexo部署到GitHub
+          遥感图像合并
         </h1>
 
         <div class="post-meta-container">
@@ -264,7 +264,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-03-01 21:40:40 / 修改时间：21:40:19" itemprop="dateCreated datePublished" datetime="2021-03-01T21:40:40+08:00">2021-03-01</time>
+      <time title="创建时间：2021-03-06 16:06:39 / 修改时间：16:17:09" itemprop="dateCreated datePublished" datetime="2021-03-06T16:06:39+08:00">2021-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -272,7 +272,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+          <a href="/categories/Picture/" itemprop="url" rel="index"><span itemprop="name">Picture</span></a>
         </span>
     </span>
 
@@ -286,47 +286,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>在完成了整个项目之后，可以通过localhost在浏览器上查看效果，但那只是在本地上查看，可以尝试将代码部署到GitHub上从而别人也可以通过这个网址看到效果。<a id="more"></a></p>
-<h2 id="条件准备"><a href="#条件准备" class="headerlink" title="条件准备"></a>条件准备</h2><p>默认下列条件已经满足：</p>
-<ul>
-<li>一个完整的hexo项目文件；</li>
-<li>有着配置好的git和GitHub账号；</li>
-</ul>
-<h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><ol>
-<li><p>在GitHub上新建一个项目，像我的用户名是lover-520，那么我的项目名取为lover-520.github.io，至于其他的readme，license等随便；</p>
-</li>
-<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#103;&#x69;&#x74;&#x40;&#x67;&#105;&#116;&#104;&#117;&#x62;&#46;&#99;&#x6f;&#109;">&#103;&#x69;&#x74;&#x40;&#x67;&#105;&#116;&#104;&#117;&#x62;&#46;&#99;&#x6f;&#109;</a>:lover-520/lover-520.github.io.git；</p>
-</li>
-<li><p>在hexo项目配置文件_config.yml中找到deploy改为下面这样：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span></span><br><span class="line">    <span class="attr">github:</span> <span class="string">git@github.com:lover-520/lover-520.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span>  <span class="string">main</span></span><br></pre></td></tr></table></figure></li>
-<li><p>在项目工程目录中执行：</p>
-</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br></pre></td></tr></table></figure>
-<p>然后</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo d</span></span><br></pre></td></tr></table></figure>
-<p>按照正常情况嘛，项目文件应该上传到GitHub上去了，然后浏览器中输入<a target="_blank" rel="noopener" href="https://lover-520.github.io/%E5%B0%B1%E8%83%BD%E7%9C%8B%E5%88%B0%E6%95%88%E6%9E%9C%E4%BA%86%EF%BC%8C%E4%BD%86%E6%98%AF%E6%88%91%E5%9C%A8%E9%83%A8%E7%BD%B2%E6%97%B6%EF%BC%8C%E6%B2%A1%E6%9C%89%E6%8A%A5%E9%94%99%EF%BC%8C%E4%B9%9F%E5%88%9B%E5%BB%BA%E4%BA%86.deploy_git%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E4%BD%86%E6%98%AF%E5%8D%B4%E5%B9%B6%E6%B2%A1%E6%9C%89%E4%B8%8A%E4%BC%A0%E5%88%B0GitHub%E4%B8%8A%E5%8E%BB%EF%BC%8C%E6%89%80%E4%BB%A5%E6%89%93%E5%BC%80%E9%82%A3%E4%B8%AA%E7%BD%91%E7%AB%99%E6%98%AF404%E7%95%8C%E9%9D%A2%E3%80%82%EF%BC%88%E4%BD%A0%E8%A6%81%E6%98%AF%E6%B7%BB%E5%8A%A0%E4%BA%86readme%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%9D%E5%B0%B1%E4%B8%8D%E6%98%AF404%EF%BC%89">https://lover-520.github.io/就能看到效果了，但是我在部署时，没有报错，也创建了.deploy_git文件夹，但是却并没有上传到GitHub上去，所以打开那个网站是404界面。（你要是添加了readme文件的话就不是404）</a></p>
-<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>好嘛，没有上传到GitHub上去，那肯定就不能正常显示啊，搜了网上的方法，没有找到方法。然后试了下自己的想法，结果可以行得通，于是在这里记录一下：</p>
-<p>可以发现.deploy_git文件夹里面其实是一个git仓库，那么其实hexo d命令应该是自动把我们的文件上传到GitHub上，那么我们也可以考虑自己将这个文件夹直接上传；</p>
-<p>进入.deploy_git文件夹</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> .deploy_git</span></span><br></pre></td></tr></table></figure>
-<p>先将这个master分支改成main分支：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b main</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge master</span></span><br></pre></td></tr></table></figure>
-<p>然后添加远程仓库：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote add origin git@github.com:lover-520/lover-520.github.io.git</span></span><br></pre></td></tr></table></figure>
-<p>拉取远程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git pull origin main</span></span><br></pre></td></tr></table></figure>
-<p>提交</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&#x27;XXX&#x27;</span></span></span><br></pre></td></tr></table></figure>
-<p>与远程同步</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push</span></span><br></pre></td></tr></table></figure>
-<p>若是出现Updates were rejected 错误，可先执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git pull origin main --allow-unrelated-histories</span></span><br></pre></td></tr></table></figure>
-<p>然后</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin main</span></span><br></pre></td></tr></table></figure>
-<p>就这样，我们可以发现GitHub上出现了文件，网站也就能正常访问了。那么在添加新博客时，需要执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo d</span></span><br></pre></td></tr></table></figure>
-<p>然后再将.deploy_git文件夹的更改同步到GitHub上。</p>
+        <p>从文件夹中读取小范围的遥感影像并合并成一大图<a id="more"></a></p>
+<h1 id="遥感图像合并"><a href="#遥感图像合并" class="headerlink" title="遥感图像合并"></a>遥感图像合并</h1><h2 id="读取tiff影像"><a href="#读取tiff影像" class="headerlink" title="读取tiff影像"></a>读取tiff影像</h2><p>采用opencv库也能读取，但是不能读取其中保存的坐标等信息；一般采用gdal库进行读取：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> osgeo <span class="keyword">import</span> gdal</span><br><span class="line"><span class="keyword">from</span> gdalconst <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">image_dataset = gdal.Open(image_path, GA_ReadOnly)</span><br><span class="line"><span class="keyword">if</span> image_dataset <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    print(<span class="string">&quot;文件读写错误！！！&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">image_geotransform = image_dataset.GetGeoTransform()</span><br><span class="line">image_width, image_height = image_dataset.RasterXSize, image_dataset.RasterYSize</span><br><span class="line">image_data = image_dataset.ReadAsArray(<span class="number">0</span>, <span class="number">0</span>, image_width, image_height)</span><br><span class="line">print(image_geotransform)</span><br><span class="line">print(image_width, image_height)</span><br><span class="line">print(image_data.shape)</span><br></pre></td></tr></table></figure>
+<h2 id="保存tiff影像"><a href="#保存tiff影像" class="headerlink" title="保存tiff影像"></a>保存tiff影像</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_tif_image</span>(<span class="params">img, path, geotrans=<span class="literal">None</span>, proj=<span class="literal">None</span>, nodata=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> img <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(img) == <span class="built_in">list</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(img) == <span class="number">1</span>:</span><br><span class="line">                img = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                base = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(img)):</span><br><span class="line">                    out = np.concatenate((base, img[i][..., np.newaxis]), axis=<span class="number">2</span>)</span><br><span class="line">                img = out</span><br><span class="line"></span><br><span class="line">        band1 = img[:,:,<span class="number">0</span>]</span><br><span class="line">        img_width = band1.shape[<span class="number">1</span>]</span><br><span class="line">        img_height = band1.shape[<span class="number">0</span>]</span><br><span class="line">        num_bands = img.shape[<span class="number">2</span>]</span><br><span class="line">        <span class="comment">#ipdb.set_trace()</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;int8&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Byte</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;int16&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_UInt16</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;float64&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Float64</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            datatype = gdal.GDT_Float32</span><br><span class="line"></span><br><span class="line">        driver = gdal.GetDriverByName(<span class="string">&quot;GTiff&quot;</span>)</span><br><span class="line">        dataset = driver.Create(path, img_width, img_height, num_bands, datatype, options = [<span class="string">&#x27;BigTIFF=YES&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> dataset <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment">#dataset.GetRasterBand(1).SetNoDataValue(nodata)</span></span><br><span class="line">            <span class="keyword">if</span> geotrans <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetGeoTransform(geotrans)</span><br><span class="line">            <span class="keyword">if</span> proj <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetProjection(proj)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_bands):</span><br><span class="line">                dataset.GetRasterBand(i + <span class="number">1</span>).WriteArray(img[:,:,i])</span><br><span class="line">        </span><br><span class="line">        dataset.BuildOverviews(<span class="string">&#x27;average&#x27;</span>,[<span class="number">2</span>,<span class="number">4</span>,<span class="number">8</span>,<span class="number">16</span>,<span class="number">32</span>,<span class="number">64</span>,<span class="number">128</span>])</span><br><span class="line">        dataset.FlushCache()</span><br><span class="line">        <span class="keyword">del</span> dataset</span><br><span class="line">        print(<span class="string">&quot;save image success.&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>具体代码可参考<a target="_blank" rel="noopener" href="https://github.com/lover-520/lover-notes">https://github.com/lover-520/lover-notes</a></p>
 
     </div>
 
@@ -336,21 +300,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Picture/" rel="tag"># Picture</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/02/19/%E5%88%9D%E6%AC%A1%E5%B0%9D%E8%AF%95hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="初次尝试hexo">
-                  <i class="fa fa-chevron-left"></i> 初次尝试hexo
+                <a href="/2021/03/06/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/" rel="prev" title="绘制柱状图">
+                  <i class="fa fa-chevron-left"></i> 绘制柱状图
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/03/06/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/" rel="next" title="绘制柱状图">
-                  绘制柱状图 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
