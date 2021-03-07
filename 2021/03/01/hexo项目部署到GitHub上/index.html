@@ -257,7 +257,7 @@
 
         <div class="post-meta-container">
           <div class="post-meta">
-    <span class="post-meta-item">
+    <span class="post-meta-item" style="/* display: none; */">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar"></i>
       </span>
@@ -277,12 +277,12 @@
     </span>
 
   
-    <span id="/2021/03/01/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/" class="post-meta-item leancloud_visitors" data-flag-title="hexo部署到GitHub" title="阅读次数">
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
       <span class="post-meta-item-text">阅读次数：</span>
-      <span class="leancloud-visitors-count"></span>
+      <span id="busuanzi_value_page_pv"></span>
     </span>
 </div>
 
@@ -302,7 +302,7 @@
 <h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><ol>
 <li><p>在GitHub上新建一个项目，像我的用户名是lover-520，那么我的项目名取为lover-520.github.io，至于其他的readme，license等随便；</p>
 </li>
-<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#x67;&#x69;&#116;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#x2e;&#x63;&#x6f;&#x6d;">&#x67;&#x69;&#116;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#x2e;&#x63;&#x6f;&#x6d;</a>:lover-520/lover-520.github.io.git；</p>
+<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#x67;&#x69;&#x74;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;">&#x67;&#x69;&#x74;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;</a>:lover-520/lover-520.github.io.git；</p>
 </li>
 <li><p>在hexo项目配置文件_config.yml中找到deploy改为下面这样：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span></span><br><span class="line">    <span class="attr">github:</span> <span class="string">git@github.com:lover-520/lover-520.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span>  <span class="string">main</span></span><br></pre></td></tr></table></figure></li>
@@ -408,19 +408,31 @@
   </span>
   <span class="author" itemprop="copyrightHolder">ZM W</span>
 </div>
+<div class="busuanzi-count">
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  <div class="powered-by">
-  <i class="fa fa-user-md"></i>
-  <span id="busuanzi_container_site_uv">
-    本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
-  </span>
-  <span id="busuanzi_container_site_pv">
-      &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
-  </span>
-  </div>
-  </div>
+
 
 
     </div>
@@ -439,94 +451,9 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
-<script>
-  (function() {
-    function leancloudSelector(url) {
-      url = encodeURI(url);
-      return document.getElementById(url).querySelector('.leancloud-visitors-count');
-    }
-
-    function addCount(Counter) {
-      const visitors = document.querySelector('.leancloud_visitors');
-      const url = decodeURI(visitors.id);
-      const title = visitors.dataset.flagTitle;
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          if (results.length > 0) {
-            const counter = results[0];
-            leancloudSelector(url).innerText = counter.time + 1;
-            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
-              .catch(error => {
-                console.error('Failed to save visitor count', error);
-              });
-          } else {
-              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
-            
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    function showTime(Counter) {
-      const visitors = document.querySelectorAll('.leancloud_visitors');
-      const entries = [...visitors].map(element => {
-        return decodeURI(element.id);
-      });
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          for (let url of entries) {
-            const target = results.find(item => item.url === url);
-            leancloudSelector(url).innerText = target ? target.time : 0;
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    const { app_id, app_key, server_url } = {"enable":true,"app_id":"KTjf9kSAT3lGOh405CPWEcdt-gzGzoHsz","app_key":"51NW1tSsJ4Wj2rh6iEet0M1P","server_url":null,"security":true};
-    function fetchData(api_server) {
-      const Counter = (method, url, data) => {
-        return fetch(`${api_server}/1.1${url}`, {
-          method,
-          headers: {
-            'X-LC-Id'     : app_id,
-            'X-LC-Key'    : app_key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-      if (CONFIG.page.isPost) {
-        if (CONFIG.hostname !== location.hostname) return;
-        addCount(Counter);
-      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
-        showTime(Counter);
-      }
-    }
-
-    const api_server = app_id.slice(-9) === '-MdYXbMMI' ? `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com` : server_url;
-
-    if (api_server) {
-      fetchData(api_server);
-    } else {
-      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
-        .then(response => response.json())
-        .then(({ api_server }) => {
-          fetchData('https://' + api_server);
-        });
-    }
-  })();
-</script>
 
 
 
