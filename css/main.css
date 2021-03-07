@@ -2444,7 +2444,7 @@ ul.breadcrumb li:last-child {
 }
 .use-motion .animated {
   animation-fill-mode: none;
-  visibility: inherit;
+  visibility: visible;
 }
 .use-motion .sidebar .animated {
   animation-fill-mode: both;
@@ -2808,6 +2808,15 @@ div.sidebar-inner.sidebar-nav-active.sidebar-toc-active {
 }
 div.header-inner {
   border-radius: 15px;
+}
+span#busuanzi_container_site_uv.post-meta-item {
+  display: block !important;
+}
+span#busuanzi_container_site_pv.post-meta-item {
+  display: block;
+}
+span#busuanzi_container_page_pv.post-meta-item {
+  display: block;
 }
 @-moz-keyframes gradientBG {
   0% {

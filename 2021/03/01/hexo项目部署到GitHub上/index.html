@@ -277,7 +277,7 @@
     </span>
 
   
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -302,7 +302,7 @@
 <h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><ol>
 <li><p>在GitHub上新建一个项目，像我的用户名是lover-520，那么我的项目名取为lover-520.github.io，至于其他的readme，license等随便；</p>
 </li>
-<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#x67;&#x69;&#x74;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;">&#x67;&#x69;&#x74;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;</a>:lover-520/lover-520.github.io.git；</p>
+<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#x74;&#104;&#117;&#x62;&#46;&#99;&#111;&#x6d;">&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#x74;&#104;&#117;&#x62;&#46;&#99;&#111;&#x6d;</a>:lover-520/lover-520.github.io.git；</p>
 </li>
 <li><p>在hexo项目配置文件_config.yml中找到deploy改为下面这样：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span></span><br><span class="line">    <span class="attr">github:</span> <span class="string">git@github.com:lover-520/lover-520.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span>  <span class="string">main</span></span><br></pre></td></tr></table></figure></li>
@@ -398,8 +398,6 @@
     <div class="footer-inner">
 
 
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
 <div class="copyright">
   &copy; 
   <span itemprop="copyrightYear">2021</span>
@@ -410,8 +408,8 @@
 </div>
 <div class="busuanzi-count">
 
-<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="">
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
       <span class="post-meta-item-icon">
         <i class="fa fa-user"></i>
       </span>
@@ -419,7 +417,7 @@
         <span id="busuanzi_value_site_uv"></span>
       </span>
     </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="">
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
       <span class="post-meta-item-icon">
         <i class="fa fa-eye"></i>
       </span>
@@ -428,10 +426,6 @@
       </span>
     </span>
 </div>
-
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
 
 
 
