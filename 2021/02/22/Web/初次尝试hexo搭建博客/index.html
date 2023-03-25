@@ -92,7 +92,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -130,9 +134,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
 </nav>
@@ -164,7 +168,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-js"><span class="nav-number">1.1.</span> <span class="nav-text">Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git"><span class="nav-number">1.2.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo"><span class="nav-number">1.3.</span> <span class="nav-text">hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">开始工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%B7%A5%E7%A8%8B%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">初始工程文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">生成静态文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">运行服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E6%96%87%E7%AB%A0"><span class="nav-number">2.4.</span> <span class="nav-text">创建新的文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B0%E4%B8%BB%E9%A2%98"><span class="nav-number">2.5.</span> <span class="nav-text">安装新主题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E6%80%A7%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">个性设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%A4%B4%E5%83%8F"><span class="nav-number">3.1.</span> <span class="nav-text">设置头像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%8A%A8%E6%80%81%E7%BA%BF%E6%9D%A1%E8%83%8C%E6%99%AF"><span class="nav-number">3.2.</span> <span class="nav-text">添加动态线条背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E7%82%B9%E5%87%BB%E7%89%B9%E6%95%88"><span class="nav-number">3.3.</span> <span class="nav-text">添加点击特效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%A1%B5%E9%9D%A2%E7%9C%8B%E6%9D%BF%E5%A8%98"><span class="nav-number">3.4.</span> <span class="nav-text">添加页面看板娘</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text"> 环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nodejs"><span class="nav-number">1.1.</span> <span class="nav-text"> Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git"><span class="nav-number">1.2.</span> <span class="nav-text"> Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo"><span class="nav-number">1.3.</span> <span class="nav-text"> hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 开始工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%B7%A5%E7%A8%8B%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text"> 初始工程文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text"> 生成静态文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text"> 运行服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E6%96%87%E7%AB%A0"><span class="nav-number">2.4.</span> <span class="nav-text"> 创建新的文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B0%E4%B8%BB%E9%A2%98"><span class="nav-number">2.5.</span> <span class="nav-text"> 安装新主题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E6%80%A7%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text"> 个性设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%A4%B4%E5%83%8F"><span class="nav-number">3.1.</span> <span class="nav-text"> 设置头像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%8A%A8%E6%80%81%E7%BA%BF%E6%9D%A1%E8%83%8C%E6%99%AF"><span class="nav-number">3.2.</span> <span class="nav-text"> 添加动态线条背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E7%82%B9%E5%87%BB%E7%89%B9%E6%95%88"><span class="nav-number">3.3.</span> <span class="nav-text"> 添加点击特效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%A1%B5%E9%9D%A2%E7%9C%8B%E6%9D%BF%E5%A8%98"><span class="nav-number">3.4.</span> <span class="nav-text"> 添加页面看板娘</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -180,20 +184,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -308,56 +312,76 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>在网上搜索怎么搭建个人博客的时候，也是发现了hexo这个框架，发现里面的主题也是挺丰富的，就尝试了使用hexo搭建自己的博客网站。<a id="more"></a></p>
-<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><h3 id="hexo"><a href="#hexo" class="headerlink" title="hexo"></a>hexo</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
-<h2 id="开始工程"><a href="#开始工程" class="headerlink" title="开始工程"></a>开始工程</h2><h3 id="初始工程文件"><a href="#初始工程文件" class="headerlink" title="初始工程文件"></a>初始工程文件</h3><p>在自己想要放置项目工程的地方打开命令行，执行：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo init myblog</span></span><br></pre></td></tr></table></figure>
+<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
+<h3 id="nodejs"><a class="markdownIt-Anchor" href="#nodejs"></a> Node.js</h3>
+<h3 id="git"><a class="markdownIt-Anchor" href="#git"></a> Git</h3>
+<h3 id="hexo"><a class="markdownIt-Anchor" href="#hexo"></a> hexo</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<h2 id="开始工程"><a class="markdownIt-Anchor" href="#开始工程"></a> 开始工程</h2>
+<h3 id="初始工程文件"><a class="markdownIt-Anchor" href="#初始工程文件"></a> 初始工程文件</h3>
+<p>在自己想要放置项目工程的地方打开命令行，执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo init myblog</span></span><br></pre></td></tr></table></figure>
 <p>执行完后会在该目录下创建一个myblog文件夹，即初始化moblog文件夹为hexo项目工程目录，里面存放着hexo的相关文件。</p>
-<h3 id="生成静态文件"><a href="#生成静态文件" class="headerlink" title="生成静态文件"></a>生成静态文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo generate</span></span><br></pre></td></tr></table></figure>
+<h3 id="生成静态文件"><a class="markdownIt-Anchor" href="#生成静态文件"></a> 生成静态文件</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo generate</span></span><br></pre></td></tr></table></figure>
 <p>或者</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br></pre></td></tr></table></figure>
-<h3 id="运行服务器"><a href="#运行服务器" class="headerlink" title="运行服务器"></a>运行服务器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo srever</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo g</span></span><br></pre></td></tr></table></figure>
+<h3 id="运行服务器"><a class="markdownIt-Anchor" href="#运行服务器"></a> 运行服务器</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo srever</span></span><br></pre></td></tr></table></figure>
 <p>或者</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo s</span></span><br></pre></td></tr></table></figure>
-<p>在浏览器中输入相应网址就能看到效果啦，当然看到的是自带的主题的效果。<img src="/images/Snipaste_2021-02-19_11-30-26.png" alt="Snipaste_2021-02-19_11-30-26"></p>
-<h3 id="创建新的文章"><a href="#创建新的文章" class="headerlink" title="创建新的文章"></a>创建新的文章</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new post <span class="string">&quot;name&quot;</span></span></span><br></pre></td></tr></table></figure>
-<h3 id="安装新主题"><a href="#安装新主题" class="headerlink" title="安装新主题"></a>安装新主题</h3><p>hexo中可以更换新主题，前往<a target="_blank" rel="noopener" href="https://hexo.io/themes/">hexo主题</a>挑选自己喜欢的主题，一般都会有相应的安装教程。我使用的NexT主题，按照<a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next">GitHub教程</a>就可以完成主题的配置了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo s</span></span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入相应网址就能看到效果啦，当然看到的是自带的主题的效果。<img src="/images/Snipaste_2021-02-19_11-30-26.png" alt="Snipaste_2021-02-19_11-30-26" /></p>
+<h3 id="创建新的文章"><a class="markdownIt-Anchor" href="#创建新的文章"></a> 创建新的文章</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo new post <span class="string">&quot;name&quot;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="安装新主题"><a class="markdownIt-Anchor" href="#安装新主题"></a> 安装新主题</h3>
+<p>hexo中可以更换新主题，前往<a target="_blank" rel="noopener" href="https://hexo.io/themes/">hexo主题</a>挑选自己喜欢的主题，一般都会有相应的安装教程。我使用的NexT主题，按照<a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next">GitHub教程</a>就可以完成主题的配置了。</p>
 <p>例如NexT主题：</p>
 <ol>
-<li><p>进入到工程目录</p>
+<li>
+<p>进入到工程目录</p>
 </li>
-<li><p>运行</p>
+<li>
+<p>运行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-theme-next</span><br></pre></td></tr></table></figure>
 <p>或者</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
 <p>运行之后就会在工程目录的themes中多出next文件夹；</p>
 </li>
-<li><p>在项目工程目录中_config.yml文件中找到theme，更改为：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure></li>
-<li><p>将themes/next中的_config.yml文件复制到项目根目录中，重命名为_config.next.yml，注意不要替换原始的hexo的配置文件_config.yml，以后的更改在_config.next.yml中更改就行；</p>
+<li>
+<p>在项目工程目录中_config.yml文件中找到theme，更改为：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>将themes/next中的_config.yml文件复制到项目根目录中，重命名为_config.next.yml，注意不要替换原始的hexo的配置文件_config.yml，以后的更改在_config.next.yml中更改就行；</p>
 </li>
 </ol>
-<h2 id="个性设置"><a href="#个性设置" class="headerlink" title="个性设置"></a>个性设置</h2><h3 id="设置头像"><a href="#设置头像" class="headerlink" title="设置头像"></a>设置头像</h3><p>在config.next.yml文件中找到avatar，更改为：</p>
+<h2 id="个性设置"><a class="markdownIt-Anchor" href="#个性设置"></a> 个性设置</h2>
+<h3 id="设置头像"><a class="markdownIt-Anchor" href="#设置头像"></a> 设置头像</h3>
+<p>在config.next.yml文件中找到avatar，更改为：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">avatar:</span></span><br><span class="line">  <span class="comment"># Replace the default image and set the url here.</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">/images/pikaqiu.png</span></span><br><span class="line">  <span class="comment"># If true, the avatar will be dispalyed in circle.</span></span><br><span class="line">  <span class="attr">rounded:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># If true, the avatar will be rotated with the cursor.</span></span><br><span class="line">  <span class="attr">rotated:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 <p>将图片放在themes/next/source/images文件夹中。</p>
-<h3 id="添加动态线条背景"><a href="#添加动态线条背景" class="headerlink" title="添加动态线条背景"></a>添加动态线条背景</h3><p>如果主题配置文件_config.next.yml中有canvas_nest的话，直接改为true就行；</p>
+<h3 id="添加动态线条背景"><a class="markdownIt-Anchor" href="#添加动态线条背景"></a> 添加动态线条背景</h3>
+<p>如果主题配置文件_config.next.yml中有canvas_nest的话，直接改为true就行；</p>
 <p>如果没有的话，在_config.next.yml中添加</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">canvas_nest:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 <p>然后在themes/next/layout/_layout.njk中body标签的最后面，也就是&lt;/body&gt;前面添加</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">if</span> theme.canvas_nest %&#125;</span><br><span class="line">&lt;script type=<span class="string">&quot;text/javascript&quot;</span> src=<span class="string">&quot;//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">if</span> theme.<span class="property">canvas_nest</span> %&#125;</span><br><span class="line">&lt;script type=<span class="string">&quot;text/javascript&quot;</span> src=<span class="string">&quot;//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
 <p>或者添加线条的其他属性：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">if</span> theme.canvas_nest %&#125;</span><br><span class="line">  &lt;script type=<span class="string">&quot;text/javascript&quot;</span> color=<span class="string">&quot;255,0,255&quot;</span> opacity=<span class="string">&#x27;0.5&#x27;</span> zIndex=<span class="string">&quot;-2&quot;</span> count=<span class="string">&quot;100&quot;</span> src=<span class="string">&quot;//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">  &#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">if</span> theme.<span class="property">canvas_nest</span> %&#125;</span><br><span class="line">  &lt;script type=<span class="string">&quot;text/javascript&quot;</span> color=<span class="string">&quot;255,0,255&quot;</span> opacity=<span class="string">&#x27;0.5&#x27;</span> zIndex=<span class="string">&quot;-2&quot;</span> count=<span class="string">&quot;100&quot;</span> src=<span class="string">&quot;//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">  &#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>color：颜色属性，默认”0,0,0”</li>
+<li>color：颜色属性，默认&quot;0,0,0&quot;</li>
 <li>opacity：线条透明度，默认0.5</li>
 <li>count：线条总数量，默认150</li>
 <li>zIndex：z-index属性，默认-1</li>
 </ul>
-<h3 id="添加点击特效"><a href="#添加点击特效" class="headerlink" title="添加点击特效"></a>添加点击特效</h3><p>在themes/next/source/js/src中新建clicklove.js文件，没有src文件夹的话建一个也行，添加代码</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!<span class="function"><span class="keyword">function</span>(<span class="params">e,t,a</span>)</span>&#123;<span class="function"><span class="keyword">function</span> <span class="title">n</span>(<span class="params"></span>)</span>&#123;c(<span class="string">&quot;.heart&#123;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);&#125;.heart:after,.heart:before&#123;content: &#x27;&#x27;;width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;&#125;.heart:after&#123;top: -5px;&#125;.heart:before&#123;left: -5px;&#125;&quot;</span>),o(),r()&#125;<span class="function"><span class="keyword">function</span> <span class="title">r</span>(<span class="params"></span>)</span>&#123;<span class="keyword">for</span>(<span class="keyword">var</span> e=<span class="number">0</span>;e&lt;d.length;e++)d[e].alpha&lt;=<span class="number">0</span>?(t.body.removeChild(d[e].el),d.splice(e,<span class="number">1</span>)):(d[e].y--,d[e].scale+=<span class="number">.004</span>,d[e].alpha-=<span class="number">.013</span>,d[e].el.style.cssText=<span class="string">&quot;left:&quot;</span>+d[e].x+<span class="string">&quot;px;top:&quot;</span>+d[e].y+<span class="string">&quot;px;opacity:&quot;</span>+d[e].alpha+<span class="string">&quot;;transform:scale(&quot;</span>+d[e].scale+<span class="string">&quot;,&quot;</span>+d[e].scale+<span class="string">&quot;) rotate(45deg);background:&quot;</span>+d[e].color+<span class="string">&quot;;z-index:99999&quot;</span>);requestAnimationFrame(r)&#125;<span class="function"><span class="keyword">function</span> <span class="title">o</span>(<span class="params"></span>)</span>&#123;<span class="keyword">var</span> t=<span class="string">&quot;function&quot;</span>==<span class="keyword">typeof</span> e.onclick&amp;&amp;e.onclick;e.onclick=<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;t&amp;&amp;t(),i(e)&#125;&#125;<span class="function"><span class="keyword">function</span> <span class="title">i</span>(<span class="params">e</span>)</span>&#123;<span class="keyword">var</span> a=t.createElement(<span class="string">&quot;div&quot;</span>);a.className=<span class="string">&quot;heart&quot;</span>,d.push(&#123;<span class="attr">el</span>:a,<span class="attr">x</span>:e.clientX-<span class="number">5</span>,<span class="attr">y</span>:e.clientY-<span class="number">5</span>,<span class="attr">scale</span>:<span class="number">1</span>,<span class="attr">alpha</span>:<span class="number">1</span>,<span class="attr">color</span>:s()&#125;),t.body.appendChild(a)&#125;<span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params">e</span>)</span>&#123;<span class="keyword">var</span> a=t.createElement(<span class="string">&quot;style&quot;</span>);a.type=<span class="string">&quot;text/css&quot;</span>;<span class="keyword">try</span>&#123;a.appendChild(t.createTextNode(e))&#125;<span class="keyword">catch</span>(t)&#123;a.styleSheet.cssText=e&#125;t.getElementsByTagName(<span class="string">&quot;head&quot;</span>)[<span class="number">0</span>].appendChild(a)&#125;<span class="function"><span class="keyword">function</span> <span class="title">s</span>(<span class="params"></span>)</span>&#123;<span class="keyword">return</span><span class="string">&quot;rgb(&quot;</span>+~~(<span class="number">255</span>*<span class="built_in">Math</span>.random())+<span class="string">&quot;,&quot;</span>+~~(<span class="number">255</span>*<span class="built_in">Math</span>.random())+<span class="string">&quot;,&quot;</span>+~~(<span class="number">255</span>*<span class="built_in">Math</span>.random())+<span class="string">&quot;)&quot;</span>&#125;<span class="keyword">var</span> d=[];e.requestAnimationFrame=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="keyword">return</span> e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;<span class="built_in">setTimeout</span>(e,<span class="number">1e3</span>/<span class="number">60</span>)&#125;&#125;(),n()&#125;(<span class="built_in">window</span>,<span class="built_in">document</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="添加点击特效"><a class="markdownIt-Anchor" href="#添加点击特效"></a> 添加点击特效</h3>
+<p>在themes/next/source/js/src中新建clicklove.js文件，没有src文件夹的话建一个也行，添加代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!<span class="keyword">function</span>(<span class="params">e,t,a</span>)&#123;<span class="keyword">function</span> <span class="title function_">n</span>(<span class="params"></span>)&#123;<span class="title function_">c</span>(<span class="string">&quot;.heart&#123;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);&#125;.heart:after,.heart:before&#123;content: &#x27;&#x27;;width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;&#125;.heart:after&#123;top: -5px;&#125;.heart:before&#123;left: -5px;&#125;&quot;</span>),<span class="title function_">o</span>(),<span class="title function_">r</span>()&#125;<span class="keyword">function</span> <span class="title function_">r</span>(<span class="params"></span>)&#123;<span class="keyword">for</span>(<span class="keyword">var</span> e=<span class="number">0</span>;e&lt;d.<span class="property">length</span>;e++)d[e].<span class="property">alpha</span>&lt;=<span class="number">0</span>?(t.<span class="property">body</span>.<span class="title function_">removeChild</span>(d[e].<span class="property">el</span>),d.<span class="title function_">splice</span>(e,<span class="number">1</span>)):(d[e].<span class="property">y</span>--,d[e].<span class="property">scale</span>+=<span class="number">.004</span>,d[e].<span class="property">alpha</span>-=<span class="number">.013</span>,d[e].<span class="property">el</span>.<span class="property">style</span>.<span class="property">cssText</span>=<span class="string">&quot;left:&quot;</span>+d[e].<span class="property">x</span>+<span class="string">&quot;px;top:&quot;</span>+d[e].<span class="property">y</span>+<span class="string">&quot;px;opacity:&quot;</span>+d[e].<span class="property">alpha</span>+<span class="string">&quot;;transform:scale(&quot;</span>+d[e].<span class="property">scale</span>+<span class="string">&quot;,&quot;</span>+d[e].<span class="property">scale</span>+<span class="string">&quot;) rotate(45deg);background:&quot;</span>+d[e].<span class="property">color</span>+<span class="string">&quot;;z-index:99999&quot;</span>);<span class="title function_">requestAnimationFrame</span>(r)&#125;<span class="keyword">function</span> <span class="title function_">o</span>(<span class="params"></span>)&#123;<span class="keyword">var</span> t=<span class="string">&quot;function&quot;</span>==<span class="keyword">typeof</span> e.<span class="property">onclick</span>&amp;&amp;e.<span class="property">onclick</span>;e.<span class="property">onclick</span>=<span class="keyword">function</span>(<span class="params">e</span>)&#123;t&amp;&amp;<span class="title function_">t</span>(),<span class="title function_">i</span>(e)&#125;&#125;<span class="keyword">function</span> <span class="title function_">i</span>(<span class="params">e</span>)&#123;<span class="keyword">var</span> a=t.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>);a.<span class="property">className</span>=<span class="string">&quot;heart&quot;</span>,d.<span class="title function_">push</span>(&#123;<span class="attr">el</span>:a,<span class="attr">x</span>:e.<span class="property">clientX</span>-<span class="number">5</span>,<span class="attr">y</span>:e.<span class="property">clientY</span>-<span class="number">5</span>,<span class="attr">scale</span>:<span class="number">1</span>,<span class="attr">alpha</span>:<span class="number">1</span>,<span class="attr">color</span>:<span class="title function_">s</span>()&#125;),t.<span class="property">body</span>.<span class="title function_">appendChild</span>(a)&#125;<span class="keyword">function</span> <span class="title function_">c</span>(<span class="params">e</span>)&#123;<span class="keyword">var</span> a=t.<span class="title function_">createElement</span>(<span class="string">&quot;style&quot;</span>);a.<span class="property">type</span>=<span class="string">&quot;text/css&quot;</span>;<span class="keyword">try</span>&#123;a.<span class="title function_">appendChild</span>(t.<span class="title function_">createTextNode</span>(e))&#125;<span class="keyword">catch</span>(t)&#123;a.<span class="property">styleSheet</span>.<span class="property">cssText</span>=e&#125;t.<span class="title function_">getElementsByTagName</span>(<span class="string">&quot;head&quot;</span>)[<span class="number">0</span>].<span class="title function_">appendChild</span>(a)&#125;<span class="keyword">function</span> <span class="title function_">s</span>(<span class="params"></span>)&#123;<span class="keyword">return</span><span class="string">&quot;rgb(&quot;</span>+~~(<span class="number">255</span>*<span class="title class_">Math</span>.<span class="title function_">random</span>())+<span class="string">&quot;,&quot;</span>+~~(<span class="number">255</span>*<span class="title class_">Math</span>.<span class="title function_">random</span>())+<span class="string">&quot;,&quot;</span>+~~(<span class="number">255</span>*<span class="title class_">Math</span>.<span class="title function_">random</span>())+<span class="string">&quot;)&quot;</span>&#125;<span class="keyword">var</span> d=[];e.<span class="property">requestAnimationFrame</span>=<span class="keyword">function</span>(<span class="params"></span>)&#123;<span class="keyword">return</span> e.<span class="property">requestAnimationFrame</span>||e.<span class="property">webkitRequestAnimationFrame</span>||e.<span class="property">mozRequestAnimationFrame</span>||e.<span class="property">oRequestAnimationFrame</span>||e.<span class="property">msRequestAnimationFrame</span>||<span class="keyword">function</span>(<span class="params">e</span>)&#123;<span class="built_in">setTimeout</span>(e,<span class="number">1e3</span>/<span class="number">60</span>)&#125;&#125;(),<span class="title function_">n</span>()&#125;(<span class="variable language_">window</span>,<span class="variable language_">document</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>然后在themes/next/layout/_layout.njk中body标签的最后面，也就是&lt;/body&gt;前面添加</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">&quot;text/javascript&quot;</span> src=<span class="string">&quot;/js/src/clicklove.js&quot;</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <p>当然还有其他点击特效也可以自己去找。</p>
-<h3 id="添加页面看板娘"><a href="#添加页面看板娘" class="headerlink" title="添加页面看板娘"></a>添加页面看板娘</h3><p>在项目工程目录中执行：</p>
+<h3 id="添加页面看板娘"><a class="markdownIt-Anchor" href="#添加页面看板娘"></a> 添加页面看板娘</h3>
+<p>在项目工程目录中执行：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -save hexo-helper-live2d</span><br></pre></td></tr></table></figure>
 <p>在<a target="_blank" rel="noopener" href="https://github.com/xiazeyu/live2d-widget-models">live2d</a>网站中找到自己喜欢的看板，然后下载，我使用的z16，执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install live2d-widget-model-z16</span><br></pre></td></tr></table></figure>
@@ -485,6 +509,39 @@
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
 
 
 

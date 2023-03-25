@@ -90,7 +90,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -128,9 +132,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
 </nav>
@@ -162,7 +166,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F%E5%90%88%E5%B9%B6"><span class="nav-number">1.</span> <span class="nav-text">遥感图像合并</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">读取tiff影像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text">保存tiff影像</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F%E5%90%88%E5%B9%B6"><span class="nav-number">1.</span> <span class="nav-text"> 遥感图像合并</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 读取tiff影像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98tiff%E5%BD%B1%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text"> 保存tiff影像</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -178,20 +182,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -302,9 +306,12 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>从文件夹中读取小范围的遥感影像并合并成一大图<a id="more"></a></p>
-<h1 id="遥感图像合并"><a href="#遥感图像合并" class="headerlink" title="遥感图像合并"></a>遥感图像合并</h1><h2 id="读取tiff影像"><a href="#读取tiff影像" class="headerlink" title="读取tiff影像"></a>读取tiff影像</h2><p>采用opencv库也能读取，但是不能读取其中保存的坐标等信息；一般采用gdal库进行读取：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> osgeo <span class="keyword">import</span> gdal</span><br><span class="line"><span class="keyword">from</span> gdalconst <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">image_dataset = gdal.Open(image_path, GA_ReadOnly)</span><br><span class="line"><span class="keyword">if</span> image_dataset <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    print(<span class="string">&quot;文件读写错误！！！&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">image_geotransform = image_dataset.GetGeoTransform()</span><br><span class="line">image_width, image_height = image_dataset.RasterXSize, image_dataset.RasterYSize</span><br><span class="line">image_data = image_dataset.ReadAsArray(<span class="number">0</span>, <span class="number">0</span>, image_width, image_height)</span><br><span class="line">print(image_geotransform)</span><br><span class="line">print(image_width, image_height)</span><br><span class="line">print(image_data.shape)</span><br></pre></td></tr></table></figure>
-<h2 id="保存tiff影像"><a href="#保存tiff影像" class="headerlink" title="保存tiff影像"></a>保存tiff影像</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_tif_image</span>(<span class="params">img, path, geotrans=<span class="literal">None</span>, proj=<span class="literal">None</span>, nodata=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> img <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(img) == <span class="built_in">list</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(img) == <span class="number">1</span>:</span><br><span class="line">                img = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                base = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(img)):</span><br><span class="line">                    out = np.concatenate((base, img[i][..., np.newaxis]), axis=<span class="number">2</span>)</span><br><span class="line">                img = out</span><br><span class="line"></span><br><span class="line">        band1 = img[:,:,<span class="number">0</span>]</span><br><span class="line">        img_width = band1.shape[<span class="number">1</span>]</span><br><span class="line">        img_height = band1.shape[<span class="number">0</span>]</span><br><span class="line">        num_bands = img.shape[<span class="number">2</span>]</span><br><span class="line">        <span class="comment">#ipdb.set_trace()</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;int8&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Byte</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;int16&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_UInt16</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;float64&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Float64</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            datatype = gdal.GDT_Float32</span><br><span class="line"></span><br><span class="line">        driver = gdal.GetDriverByName(<span class="string">&quot;GTiff&quot;</span>)</span><br><span class="line">        dataset = driver.Create(path, img_width, img_height, num_bands, datatype, options = [<span class="string">&#x27;BigTIFF=YES&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> dataset <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment">#dataset.GetRasterBand(1).SetNoDataValue(nodata)</span></span><br><span class="line">            <span class="keyword">if</span> geotrans <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetGeoTransform(geotrans)</span><br><span class="line">            <span class="keyword">if</span> proj <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetProjection(proj)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_bands):</span><br><span class="line">                dataset.GetRasterBand(i + <span class="number">1</span>).WriteArray(img[:,:,i])</span><br><span class="line">        </span><br><span class="line">        dataset.BuildOverviews(<span class="string">&#x27;average&#x27;</span>,[<span class="number">2</span>,<span class="number">4</span>,<span class="number">8</span>,<span class="number">16</span>,<span class="number">32</span>,<span class="number">64</span>,<span class="number">128</span>])</span><br><span class="line">        dataset.FlushCache()</span><br><span class="line">        <span class="keyword">del</span> dataset</span><br><span class="line">        print(<span class="string">&quot;save image success.&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="遥感图像合并"><a class="markdownIt-Anchor" href="#遥感图像合并"></a> 遥感图像合并</h1>
+<h2 id="读取tiff影像"><a class="markdownIt-Anchor" href="#读取tiff影像"></a> 读取tiff影像</h2>
+<p>采用opencv库也能读取，但是不能读取其中保存的坐标等信息；一般采用gdal库进行读取：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> osgeo <span class="keyword">import</span> gdal</span><br><span class="line"><span class="keyword">from</span> gdalconst <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">image_dataset = gdal.Open(image_path, GA_ReadOnly)</span><br><span class="line"><span class="keyword">if</span> image_dataset <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;文件读写错误！！！&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">image_geotransform = image_dataset.GetGeoTransform()</span><br><span class="line">image_width, image_height = image_dataset.RasterXSize, image_dataset.RasterYSize</span><br><span class="line">image_data = image_dataset.ReadAsArray(<span class="number">0</span>, <span class="number">0</span>, image_width, image_height)</span><br><span class="line"><span class="built_in">print</span>(image_geotransform)</span><br><span class="line"><span class="built_in">print</span>(image_width, image_height)</span><br><span class="line"><span class="built_in">print</span>(image_data.shape)</span><br></pre></td></tr></table></figure>
+<h2 id="保存tiff影像"><a class="markdownIt-Anchor" href="#保存tiff影像"></a> 保存tiff影像</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">write_tif_image</span>(<span class="params">img, path, geotrans=<span class="literal">None</span>, proj=<span class="literal">None</span>, nodata=<span class="number">0</span></span>):</span><br><span class="line">    <span class="keyword">if</span> img <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(img) == <span class="built_in">list</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(img) == <span class="number">1</span>:</span><br><span class="line">                img = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                base = img[<span class="number">0</span>][..., np.newaxis]</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(img)):</span><br><span class="line">                    out = np.concatenate((base, img[i][..., np.newaxis]), axis=<span class="number">2</span>)</span><br><span class="line">                img = out</span><br><span class="line"></span><br><span class="line">        band1 = img[:,:,<span class="number">0</span>]</span><br><span class="line">        img_width = band1.shape[<span class="number">1</span>]</span><br><span class="line">        img_height = band1.shape[<span class="number">0</span>]</span><br><span class="line">        num_bands = img.shape[<span class="number">2</span>]</span><br><span class="line">        <span class="comment">#ipdb.set_trace()</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;int8&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Byte</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;int16&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_UInt16</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;float64&#x27;</span> <span class="keyword">in</span> band1.dtype.name:</span><br><span class="line">            datatype = gdal.GDT_Float64</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            datatype = gdal.GDT_Float32</span><br><span class="line"></span><br><span class="line">        driver = gdal.GetDriverByName(<span class="string">&quot;GTiff&quot;</span>)</span><br><span class="line">        dataset = driver.Create(path, img_width, img_height, num_bands, datatype, options = [<span class="string">&#x27;BigTIFF=YES&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> dataset <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment">#dataset.GetRasterBand(1).SetNoDataValue(nodata)</span></span><br><span class="line">            <span class="keyword">if</span> geotrans <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetGeoTransform(geotrans)</span><br><span class="line">            <span class="keyword">if</span> proj <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                dataset.SetProjection(proj)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_bands):</span><br><span class="line">                dataset.GetRasterBand(i + <span class="number">1</span>).WriteArray(img[:,:,i])</span><br><span class="line">        </span><br><span class="line">        dataset.BuildOverviews(<span class="string">&#x27;average&#x27;</span>,[<span class="number">2</span>,<span class="number">4</span>,<span class="number">8</span>,<span class="number">16</span>,<span class="number">32</span>,<span class="number">64</span>,<span class="number">128</span>])</span><br><span class="line">        dataset.FlushCache()</span><br><span class="line">        <span class="keyword">del</span> dataset</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;save image success.&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p>具体代码可参考<a target="_blank" rel="noopener" href="https://github.com/lover-520/lover-notes">https://github.com/lover-520/lover-notes</a></p>
 
     </div>
@@ -327,6 +334,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2023/03/18/Transformer/Transformer/" rel="next" title="李宏毅Transformer课程记录">
+                  李宏毅Transformer课程记录 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -417,6 +427,39 @@
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
 
 
 

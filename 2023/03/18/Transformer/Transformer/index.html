@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="李宏毅老师课程中关于Transformer的讲解记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="李宏毅Transformer课程记录">
+<meta property="og:url" content="http://example.com/2023/03/18/Transformer/Transformer/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="李宏毅老师课程中关于Transformer的讲解记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_17-21-29.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_19-55-00.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-07-43.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-12-13.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-17-19.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-23-45.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-26-34.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-35-56.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-48-19.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_20-53-34.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_21-25-56.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_21-28-34.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-29-59.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-38-53.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-42-55.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-52-06.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-53-43.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-01_23-55-39.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2022-05-02_00-00-16.png">
+<meta property="article:published_time" content="2023-03-17T16:07:34.000Z">
+<meta property="article:modified_time" content="2023-03-24T17:21:10.784Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/pic/Snipaste_2022-05-01_17-21-29.png">
+
+
+<link rel="canonical" href="http://example.com/2023/03/18/Transformer/Transformer/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>李宏毅Transformer课程记录 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vision-transformer"><span class="nav-number">1.</span> <span class="nav-text"> Vision Transformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#self-attention"><span class="nav-number">1.1.</span> <span class="nav-text"> Self-attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#transformer"><span class="nav-number">1.2.</span> <span class="nav-text"> Transformer</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/18/Transformer/Transformer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          李宏毅Transformer课程记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-18 00:07:34" itemprop="dateCreated datePublished" datetime="2023-03-18T00:07:34+08:00">2023-03-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-03-25 01:21:10" itemprop="dateModified" datetime="2023-03-25T01:21:10+08:00">2023-03-25</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>李宏毅老师课程中关于Transformer的讲解记录。<a id="more"></a></p>
+<h1 id="vision-transformer"><a class="markdownIt-Anchor" href="#vision-transformer"></a> Vision Transformer</h1>
+<p>注：<br />
+笔记图片来自于李宏毅老师课程网站：<a target="_blank" rel="noopener" href="https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.php">https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.php</a><br />
+参考了李沐老师的论文讲解视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pu411o7BE?spm_id_from=333.337.search-card.all.click">https://www.bilibili.com/video/BV1pu411o7BE?spm_id_from=333.337.search-card.all.click</a></p>
+<h2 id="self-attention"><a class="markdownIt-Anchor" href="#self-attention"></a> Self-attention</h2>
+<p>常见的模型：输入是一个向量(vector)，输出是一个数值(scalar)，这种情况属于回归(regression)，或者输出是类别(class)，这种情况属于分类(classification)；</p>
+<p>那么当输入更复杂的情况下，比如输入时向量的集合时，一排向量，并且每一个向量的长度都是不一样的，输出是一排数值或者一排类别；</p>
+<p>模型的输入：</p>
+<ul>
+<li>比如说文字处理，模型的输入肯定会是一个句子，句子的长度是不固定的，句子中的每一个单词用一个vector来表示，句子就可以用很多个vector来表示，就是所谓的sequence；用vector来表示词汇的一种方法是One-hot Encoding，将英文中的所有单词都列举出来，长度M，然后创造一个长度为1*M的一维向量，出现这个单词的位置置为1，其余位置0；<strong>缺点：只考虑到怎么用向量表示单词，忽略了单词之间的语义信息，比如cat、dog都表示动物，那么就有一种Word Embedding的技术，将语义信息相近的单词表示得更为接近；</strong></li>
+<li>用一排向量来表示的例子还有很多：语音、图(graph, eg social network)</li>
+</ul>
+<p>模型的输出：</p>
+<ul>
+<li>输出与输入长度一致：词性标识(判断句子中每个单词的词性)、图结点预测(比如给定一个social network，然后判断里面每一个是否可能会买某种商品之类的)；</li>
+<li>输出与输入长度不一致：
+<ul>
+<li>输出长度为1：句子判断(比如判断某个句子是褒义的还是贬义的)、人的语音识别(判断一段语音是谁说的)；</li>
+<li>模型自行决定输出长度：翻译</li>
+</ul>
+</li>
+</ul>
+<p>以输出与输入长度一致为例：</p>
+<p>就是要对输入的sequence中的每一个vector都输出一个label，这种情况称为Sequence Labeling。下图中针对这个句子输出每个单词的词性，可以直接对每一个vector都输入到FC中，然后输出label；但是这样的问题就没有考虑到某个单词在不同的位置可能具有不同的词性，例子中第一个saw是动词，看见的过去式，最后一个saw是名词锯子，显然对每一个vector都进行FC不可能对单词saw会有不同的结果，然后就考虑使用上下文信息；考虑用一个窗口(window)，每次都会考虑这个窗口中的vector的信息；但是，有时候需要考虑整个sequence的信息，这就时候就需要一个window将整个sequence进行覆盖住，就需要优先遍历一遍所有的sequence，用最长的长度构建一个window，这样就会导致参数过大，容易过拟合；</p>
+<p><img src="/pic/Snipaste_2022-05-01_17-21-29.png" alt="sequence labeling" /></p>
+<p><strong>那么就需要使用一种Self-attention的技术来考虑整个sequence的信息</strong>；self-attention是transformer中一个重要的module；对于输入的sequence，经过self-attention之后有多个不同的带有全局上下文信息的输出，然后经过FC；那么这种self-attention也是可以堆叠的，经过FC层之后再堆叠self-attentioon；</p>
+<p><img src="/pic/Snipaste_2022-05-01_19-55-00.png" alt="self-attention" /></p>
+<p>self-attention计算过程：</p>
+<p>主要原理：</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-07-43.png" alt="self-attention" /></p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">a^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">a^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">a^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>是输入或者某一层的输出，经过self-attention模块之后得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup><msup><mi>b</mi><mn>2</mn></msup><msup><mi>b</mi><mn>3</mn></msup><msup><mi>b</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">b^1 b^2 b^3 b^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>，那么在该过程中需要考虑输入<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>2</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>3</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1、a^2、a^3、a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>之间的相关程度，那么在衡量两个向量之间的程度有很多中方式，只要输入是两向量，然后输出一个值就可以；在transformer中应用的Dot-product操作，就是第一个向量乘以<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup></mrow><annotation encoding="application/x-tex">W^q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span></span></span></span>矩阵得到q，另一个向量乘以<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">W^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span>矩阵得到k，然后element wise的乘法得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>；右边是另外一种方式，先不用管；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-12-13.png" alt="self-attention" /></p>
+<p>计算过程：</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-17-19.png" alt="self-sttention" /></p>
+<p>对于输入<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>2</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>3</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1、a^2、a^3、a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>，以<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">a^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>为例，乘以矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup></mrow><annotation encoding="application/x-tex">W^q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span></span></span></span>得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">q^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>，对其余的向量乘以<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">W^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span>得到k，然后q与k做Dot-product，得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha_{1,2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.716668em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span> 表示 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mtext>、</mtext><msup><mi>a</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">a^1、a^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>之间的相关性，其他同理类似；<strong>与<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">a^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>自身计算相关性也是可以的</strong>；对计算的结果经过softmax，或者其他的操作都行，反正是做个normalization操作；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-23-45.png" alt="self-attention" /></p>
+<p>在得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mn>1</mn></mrow><msup><mrow></mrow><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></msubsup></mrow><annotation encoding="application/x-tex">\alpha^{&#x27;}_{1,1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.3266959999999999em;vertical-align:-0.38421599999999995em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.94248em;"><span style="top:-2.4518920000000004em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8278285714285715em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.38421599999999995em;"><span></span></span></span></span></span></span></span></span></span>这几个数值之后，然后与每个向量的v矩阵进行相乘求和得到b输出；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-26-34.png" alt="self-attention" /></p>
+<p>总结：</p>
+<p>总的来说，对于self-attention的计算流程，就是分别计算q、k、v三个矩阵，具体理解过程可以看李宏毅老师的pdf，最后只有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup><mtext>、</mtext><msup><mi>W</mi><mi>k</mi></msup><mtext>、</mtext><msup><mi>W</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">W^q、W^k、W^v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">、</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span></span></span></span></span></span></span>三个矩阵是需要模型学习出来的；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-35-56.png" alt="self-attention" /></p>
+<p>多头注意力机制(Multi-head Self-attention)</p>
+<p>考虑到了多种不同的相关关系，计算不同的qkv值，然后计算b值，不同的b值然后通过一个可学习的矩阵得到最后的b；这里的head的数目是一个超参数，依据不同的问题自己决定；<strong>这里的multi-head机制从矩阵计算的角度来看是李宏毅老师讲解的将原始的q矩阵乘以不同的矩阵获取q1、q2，李沐老师讲解的论文中从理解的角度上来看是通过线性映射到不同维度的空间上进行计算，不然Dot-Product操作中其实就只有矩阵相乘而没有其他的需要学习的参数；</strong></p>
+<p>但是这种self-attention结构缺乏位置信息，比如说在上面计算输入的向量之间的相关性的时候，任意两个向量交换位置对最后计算的b值是没有影响的；因此，可考虑引入位置信息；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-48-19.png" alt="self-attention" /></p>
+<p>Self-attention可以应用于其他领域中；</p>
+<p>在Speech中应用Truncated Self-attention；</p>
+<p>在Image中应用Self-attention，将每一个像素值(包含三个不同的通道值)看成是一个vector；那么这样就可以理解成，self-attention是一种更复杂CNN，CNN是简化的self-attention，因为CNN只能注意到receptive field中的信息，而self-attention可以在整张图片上查找信息；</p>
+<p><img src="/pic/Snipaste_2022-05-01_20-53-34.png" alt="self-attention" /></p>
+<p>Self-attention与RNN的不同之处这里略，因为我对RNN也不是很了解；</p>
+<h2 id="transformer"><a class="markdownIt-Anchor" href="#transformer"></a> Transformer</h2>
+<p>Sequence-to-Sequence(Seq2Seq)，输入是sequence，输出是sequence，输出的长度由模型决定；一般的Seq2seq模型包含两个部分，Encoder和Decoder两个部分，现在基本上提到Seq2seq都会想到Transformer，以往的不是Transformer；</p>
+<p>Encoder：</p>
+<p><img src="/pic/Snipaste_2022-05-01_21-25-56.png" alt="transformer" /></p>
+<p>对于Encoder部分，其实就是给定一排向量，输出一排向量，那么很多模型都能做到，RNN、CNN、self-attention都能；对于Transformer’s Encoder，使用的是self-attention；</p>
+<p>对于encoder中的每一个block，Transformer中是这样计算的：对于输入的一排向量，经过self-attention计算之后得到的值，经过一个残差连接，然后经过一个layer normalization，经过FC，再使用残差连接和layer normalization得到输出；</p>
+<p>这种self-attention和layer normalization的使用顺序，这里是按照Attention Is all you Need论文中讲解的，后面也有文章针对这个不同搭配进行研究的；</p>
+<p><img src="/pic/Snipaste_2022-05-01_21-28-34.png" alt="transformer" /></p>
+<p>对于Decoder部分，将Encoder的输出进行计算得到output sequence；</p>
+<p>Decoder的一种架构是Autoregression(AT)</p>
+<p>首先需要给定一个START的字符，然后通过Decoder，预测下一个字符是机，这里得到机字的过程是Decoder得到一个很长的向量，总长度应该是要预测的所有字符的长度，然后取里面概率最大的那个值；然后依次将预测的字作为输入放到Decoder中去，依次预测到器字、学字、习字；</p>
+<p><img src="/pic/Snipaste_2022-05-01_23-29-59.png" alt="transformer" /></p>
+<p>那么在Decoder的结构中，先不考虑来自Encoder的输出，Decoder的结构与Encoder类似，但是Decoder中第一步使用了Masked Multi-Head Attention；</p>
+<p><img src="/pic/Snipaste_2022-05-01_23-38-53.png" alt="transformer" /></p>
+<p>Masked Multi-Head Attention结构：就是在计算self-attention的时候，不能考虑之后的值之间的联系，就是在计算b2的时候，不能考虑a3、a4，因为这个时候Decoder中还没有a3、a4；</p>
+<p><img src="/pic/Snipaste_2022-05-01_23-42-55.png" alt="transformer" /></p>
+<p>好，那么目前Decoder中还存在的问题是，如果中间预测一步错的话，后面可能会导致每一步的结构都是错误的，并且模型还得自己决定output sequence的长度，针对输出长度的问题，需要添加一个结束词，当模型输出到这个词的时候，就是结束的时候；</p>
+<p>Decoder的另一种架构是Non-autoregression；</p>
+<p>Transformer的结构：</p>
+<p>需要注意的是中间标注出的Cross-attention，这是Decoder获取Encoder中的输出信息的桥梁；</p>
+<p><img src="/pic/Snipaste_2022-05-01_23-52-06.png" alt="transformer-structure" /></p>
+<p>计算过程：</p>
+<p>Decoder中对START进行Self-attention之后，抽取q矩阵，与Encoder中的信息提取出的k、v矩阵计算相关性，然后经过FC作为下一个block的输入；对第二个预测也是一样，用的是Masked Self-attention；那么这种Cross Attention还可以有许多变种；</p>
+<p><img src="/pic/Snipaste_2022-05-01_23-53-43.png" alt="transformer" /><br />
+<img src="/pic/Snipaste_2022-05-01_23-55-39.png" alt="transformer" /></p>
+<p>训练过程中的损失函数cross entropy：</p>
+<p>需要注意的在之前说到的Decoder依次预测机、器、学、习四个字，这是针对预测而言的，预测是用前面预测的字进行Decoder预测后面的字，但训练的时候，我们使用Ground Truth作为Decoder的输入，也就是我们希望输入机字时，输出是器；</p>
+<p><img src="/pic/Snipaste_2022-05-02_00-00-16.png" alt="transformer" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/06/GDAL/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/" rel="prev" title="遥感图像合并">
+                  <i class="fa fa-chevron-left"></i> 遥感图像合并
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/18/Transformer/SwinTransformer/Noted/" rel="next" title="Swin Transformer代码记录">
+                  Swin Transformer代码记录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+<div class="busuanzi-count">
+
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

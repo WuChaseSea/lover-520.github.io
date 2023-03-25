@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="关于SwinTransformer的代码详解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swin Transformer代码记录">
+<meta property="og:url" content="http://example.com/2023/03/18/Transformer/SwinTransformer/Noted/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="关于SwinTransformer的代码详解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-17T16:17:45.000Z">
+<meta property="article:modified_time" content="2023-03-24T16:42:11.831Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/03/18/Transformer/SwinTransformer/Noted/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Swin Transformer代码记录 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#swintransformer-%E4%BB%A3%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text"> SwinTransformer 代码详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#swintransformer%E7%9A%84%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text"> SwinTransformer的整体流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#patch-embedding"><span class="nav-number">1.2.</span> <span class="nav-text"> Patch Embedding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#patch-merging"><span class="nav-number">1.3.</span> <span class="nav-text"> Patch Merging</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#window-partition"><span class="nav-number">1.4.</span> <span class="nav-text"> Window Partition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#window-reverse"><span class="nav-number">1.5.</span> <span class="nav-text"> Window Reverse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#window-attention"><span class="nav-number">1.6.</span> <span class="nav-text"> Window Attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#swintransformerblock"><span class="nav-number">1.7.</span> <span class="nav-text"> SwinTransformerBlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#swintransformer%E6%80%BB%E4%BD%93%E4%BB%A3%E7%A0%81"><span class="nav-number">1.8.</span> <span class="nav-text"> SwinTransformer总体代码</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/18/Transformer/SwinTransformer/Noted/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swin Transformer代码记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-18 00:17:45" itemprop="dateCreated datePublished" datetime="2023-03-18T00:17:45+08:00">2023-03-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-03-25 00:42:11" itemprop="dateModified" datetime="2023-03-25T00:42:11+08:00">2023-03-25</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BB%A3%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">代码</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于SwinTransformer的代码详解。<a id="more"></a></p>
+<h1 id="swintransformer-代码详解"><a class="markdownIt-Anchor" href="#swintransformer-代码详解"></a> SwinTransformer 代码详解</h1>
+<h2 id="swintransformer的整体流程"><a class="markdownIt-Anchor" href="#swintransformer的整体流程"></a> SwinTransformer的整体流程</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SwinTransformer</span>(nn.Module):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot; Swin Transformer</span></span><br><span class="line"><span class="string">        A PyTorch impl of : `Swin Transformer: Hierarchical Vision Transformer using Shifted Windows`  -</span></span><br><span class="line"><span class="string">          https://arxiv.org/pdf/2103.14030</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        img_size (int | tuple(int)): Input image size. Default 224</span></span><br><span class="line"><span class="string">        patch_size (int | tuple(int)): Patch size. Default: 4</span></span><br><span class="line"><span class="string">        in_chans (int): Number of input image channels. Default: 3</span></span><br><span class="line"><span class="string">        num_classes (int): Number of classes for classification head. Default: 1000</span></span><br><span class="line"><span class="string">        embed_dim (int): Patch embedding dimension. Default: 96</span></span><br><span class="line"><span class="string">        depths (tuple(int)): Depth of each Swin Transformer layer.</span></span><br><span class="line"><span class="string">        num_heads (tuple(int)): Number of attention heads in different layers.</span></span><br><span class="line"><span class="string">        window_size (int): Window size. Default: 7</span></span><br><span class="line"><span class="string">        mlp_ratio (float): Ratio of mlp hidden dim to embedding dim. Default: 4</span></span><br><span class="line"><span class="string">        qkv_bias (bool): If True, add a learnable bias to query, key, value. Default: True</span></span><br><span class="line"><span class="string">        qk_scale (float): Override default qk scale of head_dim ** -0.5 if set. Default: None</span></span><br><span class="line"><span class="string">        drop_rate (float): Dropout rate. Default: 0</span></span><br><span class="line"><span class="string">        attn_drop_rate (float): Attention dropout rate. Default: 0</span></span><br><span class="line"><span class="string">        drop_path_rate (float): Stochastic depth rate. Default: 0.1</span></span><br><span class="line"><span class="string">        norm_layer (nn.Module): Normalization layer. Default: nn.LayerNorm.</span></span><br><span class="line"><span class="string">        ape (bool): If True, add absolute position embedding to the patch embedding. Default: False</span></span><br><span class="line"><span class="string">        patch_norm (bool): If True, add normalization after patch embedding. Default: True</span></span><br><span class="line"><span class="string">        use_checkpoint (bool): Whether to use checkpointing to save memory. Default: False</span></span><br><span class="line"><span class="string">        fused_window_process (bool, optional): If True, use one kernel to fused window shift &amp; window partition for acceleration, similar for the reversed part. Default: False</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, img_size=<span class="number">224</span>, patch_size=<span class="number">4</span>, in_chans=<span class="number">3</span>, num_classes=<span class="number">1000</span>,</span></span><br><span class="line"><span class="params">                 embed_dim=<span class="number">96</span>, depths=[<span class="number">2</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">2</span>], num_heads=[<span class="number">3</span>, <span class="number">6</span>, <span class="number">12</span>, <span class="number">24</span>],</span></span><br><span class="line"><span class="params">                 window_size=<span class="number">7</span>, mlp_ratio=<span class="number">4.</span>, qkv_bias=<span class="literal">True</span>, qk_scale=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                 drop_rate=<span class="number">0.</span>, attn_drop_rate=<span class="number">0.</span>, drop_path_rate=<span class="number">0.1</span>,</span></span><br><span class="line"><span class="params">                 norm_layer=nn.LayerNorm, ape=<span class="literal">False</span>, patch_norm=<span class="literal">True</span>,</span></span><br><span class="line"><span class="params">                 use_checkpoint=<span class="literal">False</span>, fused_window_process=<span class="literal">False</span>, **kwargs</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line"></span><br><span class="line">        self.num_classes = num_classes</span><br><span class="line">        self.num_layers = <span class="built_in">len</span>(depths)</span><br><span class="line">        self.embed_dim = embed_dim</span><br><span class="line">        self.ape = ape</span><br><span class="line">        self.patch_norm = patch_norm</span><br><span class="line">        self.num_features = <span class="built_in">int</span>(embed_dim * <span class="number">2</span> ** (self.num_layers - <span class="number">1</span>))</span><br><span class="line">        self.mlp_ratio = mlp_ratio</span><br><span class="line"></span><br><span class="line">        <span class="comment"># split image into non-overlapping patches</span></span><br><span class="line">        self.patch_embed = PatchEmbed(</span><br><span class="line">            img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim,</span><br><span class="line">            norm_layer=norm_layer <span class="keyword">if</span> self.patch_norm <span class="keyword">else</span> <span class="literal">None</span>)</span><br><span class="line">        num_patches = self.patch_embed.num_patches</span><br><span class="line">        patches_resolution = self.patch_embed.patches_resolution</span><br><span class="line">        self.patches_resolution = patches_resolution</span><br><span class="line"></span><br><span class="line">        <span class="comment"># absolute position embedding</span></span><br><span class="line">        <span class="keyword">if</span> self.ape:</span><br><span class="line">            self.absolute_pos_embed = nn.Parameter(torch.zeros(<span class="number">1</span>, num_patches, embed_dim))</span><br><span class="line">            trunc_normal_(self.absolute_pos_embed, std=<span class="number">.02</span>)</span><br><span class="line"></span><br><span class="line">        self.pos_drop = nn.Dropout(p=drop_rate)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># stochastic depth</span></span><br><span class="line">        dpr = [x.item() <span class="keyword">for</span> x <span class="keyword">in</span> torch.linspace(<span class="number">0</span>, drop_path_rate, <span class="built_in">sum</span>(depths))]  <span class="comment"># stochastic depth decay rule</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># build layers</span></span><br><span class="line">        self.layers = nn.ModuleList()</span><br><span class="line">        <span class="keyword">for</span> i_layer <span class="keyword">in</span> <span class="built_in">range</span>(self.num_layers):</span><br><span class="line">            layer = BasicLayer(dim=<span class="built_in">int</span>(embed_dim * <span class="number">2</span> ** i_layer),</span><br><span class="line">                               input_resolution=(patches_resolution[<span class="number">0</span>] // (<span class="number">2</span> ** i_layer),</span><br><span class="line">                                                 patches_resolution[<span class="number">1</span>] // (<span class="number">2</span> ** i_layer)),</span><br><span class="line">                               depth=depths[i_layer],</span><br><span class="line">                               num_heads=num_heads[i_layer],</span><br><span class="line">                               window_size=window_size,</span><br><span class="line">                               mlp_ratio=self.mlp_ratio,</span><br><span class="line">                               qkv_bias=qkv_bias, qk_scale=qk_scale,</span><br><span class="line">                               drop=drop_rate, attn_drop=attn_drop_rate,</span><br><span class="line">                               drop_path=dpr[<span class="built_in">sum</span>(depths[:i_layer]):<span class="built_in">sum</span>(depths[:i_layer + <span class="number">1</span>])],</span><br><span class="line">                               norm_layer=norm_layer,</span><br><span class="line">                               downsample=PatchMerging <span class="keyword">if</span> (i_layer &lt; self.num_layers - <span class="number">1</span>) <span class="keyword">else</span> <span class="literal">None</span>,</span><br><span class="line">                               use_checkpoint=use_checkpoint,</span><br><span class="line">                               fused_window_process=fused_window_process)</span><br><span class="line">            self.layers.append(layer)</span><br><span class="line"></span><br><span class="line">        self.norm = norm_layer(self.num_features)</span><br><span class="line">        self.avgpool = nn.AdaptiveAvgPool1d(<span class="number">1</span>)</span><br><span class="line">        self.head = nn.Linear(self.num_features, num_classes) <span class="keyword">if</span> num_classes &gt; <span class="number">0</span> <span class="keyword">else</span> nn.Identity()</span><br><span class="line"></span><br><span class="line">        self.apply(self._init_weights)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_init_weights</span>(<span class="params">self, m</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(m, nn.Linear):</span><br><span class="line">            trunc_normal_(m.weight, std=<span class="number">.02</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(m, nn.Linear) <span class="keyword">and</span> m.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                nn.init.constant_(m.bias, <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">isinstance</span>(m, nn.LayerNorm):</span><br><span class="line">            nn.init.constant_(m.bias, <span class="number">0</span>)</span><br><span class="line">            nn.init.constant_(m.weight, <span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @torch.jit.ignore</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">no_weight_decay</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">&#x27;absolute_pos_embed&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">    @torch.jit.ignore</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">no_weight_decay_keywords</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">&#x27;relative_position_bias_table&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_features</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = self.patch_embed(x)</span><br><span class="line">        <span class="keyword">if</span> self.ape:</span><br><span class="line">            x = x + self.absolute_pos_embed</span><br><span class="line">        x = self.pos_drop(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers:</span><br><span class="line">            x = layer(x)</span><br><span class="line"></span><br><span class="line">        x = self.norm(x)  <span class="comment"># B L C</span></span><br><span class="line">        x = self.avgpool(x.transpose(<span class="number">1</span>, <span class="number">2</span>))  <span class="comment"># B C 1</span></span><br><span class="line">        x = torch.flatten(x, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = self.forward_features(x)</span><br><span class="line">        x = self.head(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">flops</span>(<span class="params">self</span>):</span><br><span class="line">        flops = <span class="number">0</span></span><br><span class="line">        flops += self.patch_embed.flops()</span><br><span class="line">        <span class="keyword">for</span> i, layer <span class="keyword">in</span> <span class="built_in">enumerate</span>(self.layers):</span><br><span class="line">            flops += layer.flops()</span><br><span class="line">        flops += self.num_features * self.patches_resolution[<span class="number">0</span>] * self.patches_resolution[<span class="number">1</span>] // (<span class="number">2</span> ** self.num_layers)</span><br><span class="line">        flops += self.num_features * self.num_classes</span><br><span class="line">        <span class="keyword">return</span> flops</span><br></pre></td></tr></table></figure>
+<ol>
+<li>输入开始的时候，先做一个 Patch Embedding，将图片切成一个个小块，并嵌入到一个Embedding中；</li>
+<li>在每个Stage的时候，由 Patch Merging和多个Block组成，其中Patch Merging在每个Stage开始的时候降低分辨率；</li>
+</ol>
+<h2 id="patch-embedding"><a class="markdownIt-Anchor" href="#patch-embedding"></a> Patch Embedding</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PatchEmbed</span>(nn.Module):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot; Image to Patch Embedding</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        img_size (int): Image size.  Default: 224.</span></span><br><span class="line"><span class="string">        patch_size (int): Patch token size. Default: 4.</span></span><br><span class="line"><span class="string">        in_chans (int): Number of input image channels. Default: 3.</span></span><br><span class="line"><span class="string">        embed_dim (int): Number of linear projection output channels. Default: 96.</span></span><br><span class="line"><span class="string">        norm_layer (nn.Module, optional): Normalization layer. Default: None</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, img_size=<span class="number">224</span>, patch_size=<span class="number">4</span>, in_chans=<span class="number">3</span>, embed_dim=<span class="number">96</span>, norm_layer=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        img_size = to_2tuple(img_size)</span><br><span class="line">        patch_size = to_2tuple(patch_size)</span><br><span class="line">        patches_resolution = [img_size[<span class="number">0</span>] // patch_size[<span class="number">0</span>], img_size[<span class="number">1</span>] // patch_size[<span class="number">1</span>]]</span><br><span class="line">        self.img_size = img_size</span><br><span class="line">        self.patch_size = patch_size</span><br><span class="line">        self.patches_resolution = patches_resolution</span><br><span class="line">        self.num_patches = patches_resolution[<span class="number">0</span>] * patches_resolution[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        self.in_chans = in_chans</span><br><span class="line">        self.embed_dim = embed_dim</span><br><span class="line"></span><br><span class="line">        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)</span><br><span class="line">        <span class="keyword">if</span> norm_layer <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            self.norm = norm_layer(embed_dim)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.norm = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        B, C, H, W = x.shape</span><br><span class="line">        <span class="comment"># FIXME look at relaxing size constraints</span></span><br><span class="line">        <span class="keyword">assert</span> H == self.img_size[<span class="number">0</span>] <span class="keyword">and</span> W == self.img_size[<span class="number">1</span>], \</span><br><span class="line">            <span class="string">f&quot;Input image size (<span class="subst">&#123;H&#125;</span>*<span class="subst">&#123;W&#125;</span>) doesn&#x27;t match model (<span class="subst">&#123;self.img_size[<span class="number">0</span>]&#125;</span>*<span class="subst">&#123;self.img_size[<span class="number">1</span>]&#125;</span>).&quot;</span></span><br><span class="line">        x = self.proj(x).flatten(<span class="number">2</span>).transpose(<span class="number">1</span>, <span class="number">2</span>)  <span class="comment"># B Ph*Pw C</span></span><br><span class="line">        <span class="keyword">if</span> self.norm <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            x = self.norm(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">flops</span>(<span class="params">self</span>):</span><br><span class="line">        Ho, Wo = self.patches_resolution</span><br><span class="line">        flops = Ho * Wo * self.embed_dim * self.in_chans * (self.patch_size[<span class="number">0</span>] * self.patch_size[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">if</span> self.norm <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            flops += Ho * Wo * self.embed_dim</span><br><span class="line">        <span class="keyword">return</span> flops</span><br></pre></td></tr></table></figure>
+<p>这个类比较简单，就是一个将输入图像进行分块的操作类。<br />
+参数十分清楚，输入是(1, 3, 224, 224)的tensor，然后利用一个卷积核大小为patch_size，步长为patch_size的卷积操作获取一个(1, 96, 56, 56)的向量，96是设置的中间线性投影的维度。然后通过一个flatten操作变成(1, 96, 3136)的向量，然后一个transpose操作就(1, 3136, 96)即(B, Ph*Pw, C)</p>
+<h2 id="patch-merging"><a class="markdownIt-Anchor" href="#patch-merging"></a> Patch Merging</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PatchMerging</span>(nn.Module):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot; Patch Merging Layer.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        input_resolution (tuple[int]): Resolution of input feature.</span></span><br><span class="line"><span class="string">        dim (int): Number of input channels.</span></span><br><span class="line"><span class="string">        norm_layer (nn.Module, optional): Normalization layer.  Default: nn.LayerNorm</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, input_resolution, dim, norm_layer=nn.LayerNorm</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.input_resolution = input_resolution</span><br><span class="line">        self.dim = dim</span><br><span class="line">        self.reduction = nn.Linear(<span class="number">4</span> * dim, <span class="number">2</span> * dim, bias=<span class="literal">False</span>)</span><br><span class="line">        self.norm = norm_layer(<span class="number">4</span> * dim)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        x: B, H*W, C</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        H, W = self.input_resolution</span><br><span class="line">        B, L, C = x.shape</span><br><span class="line">        <span class="keyword">assert</span> L == H * W, <span class="string">&quot;input feature has wrong size&quot;</span></span><br><span class="line">        <span class="keyword">assert</span> H % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">and</span> W % <span class="number">2</span> == <span class="number">0</span>, <span class="string">f&quot;x size (<span class="subst">&#123;H&#125;</span>*<span class="subst">&#123;W&#125;</span>) are not even.&quot;</span></span><br><span class="line"></span><br><span class="line">        x = x.view(B, H, W, C)</span><br><span class="line"></span><br><span class="line">        x0 = x[:, <span class="number">0</span>::<span class="number">2</span>, <span class="number">0</span>::<span class="number">2</span>, :]  <span class="comment"># B H/2 W/2 C</span></span><br><span class="line">        x1 = x[:, <span class="number">1</span>::<span class="number">2</span>, <span class="number">0</span>::<span class="number">2</span>, :]  <span class="comment"># B H/2 W/2 C</span></span><br><span class="line">        x2 = x[:, <span class="number">0</span>::<span class="number">2</span>, <span class="number">1</span>::<span class="number">2</span>, :]  <span class="comment"># B H/2 W/2 C</span></span><br><span class="line">        x3 = x[:, <span class="number">1</span>::<span class="number">2</span>, <span class="number">1</span>::<span class="number">2</span>, :]  <span class="comment"># B H/2 W/2 C</span></span><br><span class="line">        x = torch.cat([x0, x1, x2, x3], -<span class="number">1</span>)  <span class="comment"># B H/2 W/2 4*C</span></span><br><span class="line">        x = x.view(B, -<span class="number">1</span>, <span class="number">4</span> * C)  <span class="comment"># B H/2*W/2 4*C</span></span><br><span class="line"></span><br><span class="line">        x = self.norm(x)</span><br><span class="line">        x = self.reduction(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">extra_repr</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&quot;input_resolution=<span class="subst">&#123;self.input_resolution&#125;</span>, dim=<span class="subst">&#123;self.dim&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">flops</span>(<span class="params">self</span>):</span><br><span class="line">        H, W = self.input_resolution</span><br><span class="line">        flops = H * W * self.dim</span><br><span class="line">        flops += (H // <span class="number">2</span>) * (W // <span class="number">2</span>) * <span class="number">4</span> * self.dim * <span class="number">2</span> * self.dim</span><br><span class="line">        <span class="keyword">return</span> flops</span><br></pre></td></tr></table></figure>
+<p>在每个Stage前做降采样，用于缩小分辨率，调整通道数，进而形成层次化的设计。<br />
+类的结构还是挺清楚的，对输入的(B, H, W, C)的向量，每隔两个位置取一个值，这样分辨率就小了一半；但是concat之后维度变成了4倍，因此通过一个nn.Linear将维度再减小一半，由4C变成2C；</p>
+<h2 id="window-partition"><a class="markdownIt-Anchor" href="#window-partition"></a> Window Partition</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">window_partition</span>(<span class="params">x, window_size</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        x: (B, H, W, C)</span></span><br><span class="line"><span class="string">        window_size (int): window size</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        windows: (num_windows*B, window_size, window_size, C)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    B, H, W, C = x.shape</span><br><span class="line">    x = x.view(B, H // window_size, window_size, W // window_size, window_size, C)</span><br><span class="line">    windows = x.permute(<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>).contiguous().view(-<span class="number">1</span>, window_size, window_size, C)</span><br><span class="line">    <span class="keyword">return</span> windows</span><br></pre></td></tr></table></figure>
+<p>窗口划分，可以指定窗口大小。输入是(B, C, H, W)大小的向量，输出一个(num_windows*B, window_size, window_size, C)大小的向量。<br />
+这里最容易出错的是H、W和window_size之间不是整除关系；</p>
+<h2 id="window-reverse"><a class="markdownIt-Anchor" href="#window-reverse"></a> Window Reverse</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">window_reverse</span>(<span class="params">windows, window_size, H, W</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        windows: (num_windows*B, window_size, window_size, C)</span></span><br><span class="line"><span class="string">        window_size (int): Window size</span></span><br><span class="line"><span class="string">        H (int): Height of image</span></span><br><span class="line"><span class="string">        W (int): Width of image</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        x: (B, H, W, C)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    B = <span class="built_in">int</span>(windows.shape[<span class="number">0</span>] / (H * W / window_size / window_size))</span><br><span class="line">    x = windows.view(B, H // window_size, W // window_size, window_size, window_size, -<span class="number">1</span>)</span><br><span class="line">    x = x.permute(<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>).contiguous().view(B, H, W, -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>窗口合并，与window_partition是相反的过程。同样，这里也容易出现view函数整除的问题，H//window_size不一定刚好整除，因此在设置window_size的时候需要格外注意；</p>
+<h2 id="window-attention"><a class="markdownIt-Anchor" href="#window-attention"></a> Window Attention</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">WindowAttention</span>(nn.Module):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot; Window based multi-head self attention (W-MSA) module with relative position bias.</span></span><br><span class="line"><span class="string">    It supports both of shifted and non-shifted window.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dim (int): Number of input channels.</span></span><br><span class="line"><span class="string">        window_size (tuple[int]): The height and width of the window.</span></span><br><span class="line"><span class="string">        num_heads (int): Number of attention heads.</span></span><br><span class="line"><span class="string">        qkv_bias (bool, optional):  If True, add a learnable bias to query, key, value. Default: True</span></span><br><span class="line"><span class="string">        qk_scale (float | None, optional): Override default qk scale of head_dim ** -0.5 if set</span></span><br><span class="line"><span class="string">        attn_drop (float, optional): Dropout ratio of attention weight. Default: 0.0</span></span><br><span class="line"><span class="string">        proj_drop (float, optional): Dropout ratio of output. Default: 0.0</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dim, window_size, num_heads, qkv_bias=<span class="literal">True</span>, qk_scale=<span class="literal">None</span>, attn_drop=<span class="number">0.</span>, proj_drop=<span class="number">0.</span></span>):</span><br><span class="line"></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.dim = dim</span><br><span class="line">        self.window_size = window_size  <span class="comment"># Wh, Ww</span></span><br><span class="line">        self.num_heads = num_heads</span><br><span class="line">        head_dim = dim // num_heads</span><br><span class="line">        self.scale = qk_scale <span class="keyword">or</span> head_dim ** -<span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># define a parameter table of relative position bias</span></span><br><span class="line">        self.relative_position_bias_table = nn.Parameter(</span><br><span class="line">            torch.zeros((<span class="number">2</span> * window_size[<span class="number">0</span>] - <span class="number">1</span>) * (<span class="number">2</span> * window_size[<span class="number">1</span>] - <span class="number">1</span>), num_heads))  <span class="comment"># 2*Wh-1 * 2*Ww-1, nH</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get pair-wise relative position index for each token inside the window</span></span><br><span class="line">        coords_h = torch.arange(self.window_size[<span class="number">0</span>])</span><br><span class="line">        coords_w = torch.arange(self.window_size[<span class="number">1</span>])</span><br><span class="line">        coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  <span class="comment"># 2, Wh, Ww</span></span><br><span class="line">        coords_flatten = torch.flatten(coords, <span class="number">1</span>)  <span class="comment"># 2, Wh*Ww</span></span><br><span class="line">        relative_coords = coords_flatten[:, :, <span class="literal">None</span>] - coords_flatten[:, <span class="literal">None</span>, :]  <span class="comment"># 2, Wh*Ww, Wh*Ww</span></span><br><span class="line">        relative_coords = relative_coords.permute(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>).contiguous()  <span class="comment"># Wh*Ww, Wh*Ww, 2</span></span><br><span class="line">        relative_coords[:, :, <span class="number">0</span>] += self.window_size[<span class="number">0</span>] - <span class="number">1</span>  <span class="comment"># shift to start from 0</span></span><br><span class="line">        relative_coords[:, :, <span class="number">1</span>] += self.window_size[<span class="number">1</span>] - <span class="number">1</span></span><br><span class="line">        relative_coords[:, :, <span class="number">0</span>] *= <span class="number">2</span> * self.window_size[<span class="number">1</span>] - <span class="number">1</span></span><br><span class="line">        relative_position_index = relative_coords.<span class="built_in">sum</span>(-<span class="number">1</span>)  <span class="comment"># Wh*Ww, Wh*Ww</span></span><br><span class="line">        self.register_buffer(<span class="string">&quot;relative_position_index&quot;</span>, relative_position_index)</span><br><span class="line"></span><br><span class="line">        self.qkv = nn.Linear(dim, dim * <span class="number">3</span>, bias=qkv_bias)</span><br><span class="line">        self.attn_drop = nn.Dropout(attn_drop)</span><br><span class="line">        self.proj = nn.Linear(dim, dim)</span><br><span class="line">        self.proj_drop = nn.Dropout(proj_drop)</span><br><span class="line"></span><br><span class="line">        trunc_normal_(self.relative_position_bias_table, std=<span class="number">.02</span>)</span><br><span class="line">        self.softmax = nn.Softmax(dim=-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x, mask=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            x: input features with shape of (num_windows*B, N, C)</span></span><br><span class="line"><span class="string">            mask: (0/-inf) mask with shape of (num_windows, Wh*Ww, Wh*Ww) or None</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">import</span> pdb;pdb.set_trace()</span><br><span class="line">        B_, N, C = x.shape</span><br><span class="line">        qkv = self.qkv(x).reshape(B_, N, <span class="number">3</span>, self.num_heads, C // self.num_heads).permute(<span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">        q, k, v = qkv[<span class="number">0</span>], qkv[<span class="number">1</span>], qkv[<span class="number">2</span>]  <span class="comment"># make torchscript happy (cannot use tensor as tuple)</span></span><br><span class="line"></span><br><span class="line">        q = q * self.scale</span><br><span class="line">        attn = (q @ k.transpose(-<span class="number">2</span>, -<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">        relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-<span class="number">1</span>)].view(</span><br><span class="line">            self.window_size[<span class="number">0</span>] * self.window_size[<span class="number">1</span>], self.window_size[<span class="number">0</span>] * self.window_size[<span class="number">1</span>], -<span class="number">1</span>)  <span class="comment"># Wh*Ww,Wh*Ww,nH</span></span><br><span class="line">        relative_position_bias = relative_position_bias.permute(<span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>).contiguous()  <span class="comment"># nH, Wh*Ww, Wh*Ww</span></span><br><span class="line">        attn = attn + relative_position_bias.unsqueeze(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> mask <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            nW = mask.shape[<span class="number">0</span>]</span><br><span class="line">            attn = attn.view(B_ // nW, nW, self.num_heads, N, N) + mask.unsqueeze(<span class="number">1</span>).unsqueeze(<span class="number">0</span>)</span><br><span class="line">            attn = attn.view(-<span class="number">1</span>, self.num_heads, N, N)</span><br><span class="line">            attn = self.softmax(attn)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            attn = self.softmax(attn)</span><br><span class="line"></span><br><span class="line">        attn = self.attn_drop(attn)</span><br><span class="line"></span><br><span class="line">        x = (attn @ v).transpose(<span class="number">1</span>, <span class="number">2</span>).reshape(B_, N, C)</span><br><span class="line">        x = self.proj(x)</span><br><span class="line">        x = self.proj_drop(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">extra_repr</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&#x27;dim=<span class="subst">&#123;self.dim&#125;</span>, window_size=<span class="subst">&#123;self.window_size&#125;</span>, num_heads=<span class="subst">&#123;self.num_heads&#125;</span>&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">flops</span>(<span class="params">self, N</span>):</span><br><span class="line">        <span class="comment"># calculate flops for 1 window with token length of N</span></span><br><span class="line">        flops = <span class="number">0</span></span><br><span class="line">        <span class="comment"># qkv = self.qkv(x)</span></span><br><span class="line">        flops += N * self.dim * <span class="number">3</span> * self.dim</span><br><span class="line">        <span class="comment"># attn = (q @ k.transpose(-2, -1))</span></span><br><span class="line">        flops += self.num_heads * N * (self.dim // self.num_heads) * N</span><br><span class="line">        <span class="comment">#  x = (attn @ v)</span></span><br><span class="line">        flops += self.num_heads * N * N * (self.dim // self.num_heads)</span><br><span class="line">        <span class="comment"># x = self.proj(x)</span></span><br><span class="line">        flops += N * self.dim * self.dim</span><br><span class="line">        <span class="keyword">return</span> flops</span><br></pre></td></tr></table></figure>
+<p>forward函数中，输入是(num_windows*B, N, C)，先经过一个nn.Linear将维度扩大为三倍，表示qkv三个不同的矩阵，再通过reshape函数和permute函数交换维度获取qkv矩阵。（代码中的艾特符号表示矩阵乘法）</p>
+<h2 id="swintransformerblock"><a class="markdownIt-Anchor" href="#swintransformerblock"></a> SwinTransformerBlock</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">    H, W = self.input_resolution</span><br><span class="line">    B, L, C = x.shape</span><br><span class="line">    <span class="keyword">assert</span> L == H * W, <span class="string">&quot;input feature has wrong size&quot;</span></span><br><span class="line"></span><br><span class="line">    shortcut = x</span><br><span class="line">    x = self.norm1(x)</span><br><span class="line">    x = x.view(B, H, W, C)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># cyclic shift</span></span><br><span class="line">    <span class="keyword">if</span> self.shift_size &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.fused_window_process:</span><br><span class="line">            shifted_x = torch.roll(x, shifts=(-self.shift_size, -self.shift_size), dims=(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">            <span class="comment"># partition windows</span></span><br><span class="line">            x_windows = window_partition(shifted_x, self.window_size)  <span class="comment"># nW*B, window_size, window_size, C</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x_windows = WindowProcess.apply(x, B, H, W, C, -self.shift_size, self.window_size)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        shifted_x = x</span><br><span class="line">        <span class="comment"># partition windows</span></span><br><span class="line">        x_windows = window_partition(shifted_x, self.window_size)  <span class="comment"># nW*B, window_size, window_size, C</span></span><br><span class="line"></span><br><span class="line">    x_windows = x_windows.view(-<span class="number">1</span>, self.window_size * self.window_size, C)  <span class="comment"># nW*B, window_size*window_size, C</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># W-MSA/SW-MSA</span></span><br><span class="line">    attn_windows = self.attn(x_windows, mask=self.attn_mask)  <span class="comment"># nW*B, window_size*window_size, C</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># merge windows</span></span><br><span class="line">    attn_windows = attn_windows.view(-<span class="number">1</span>, self.window_size, self.window_size, C)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># reverse cyclic shift</span></span><br><span class="line">    <span class="keyword">if</span> self.shift_size &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.fused_window_process:</span><br><span class="line">            shifted_x = window_reverse(attn_windows, self.window_size, H, W)  <span class="comment"># B H&#x27; W&#x27; C</span></span><br><span class="line">            x = torch.roll(shifted_x, shifts=(self.shift_size, self.shift_size), dims=(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x = WindowProcessReverse.apply(attn_windows, B, H, W, C, self.shift_size, self.window_size)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        shifted_x = window_reverse(attn_windows, self.window_size, H, W)  <span class="comment"># B H&#x27; W&#x27; C</span></span><br><span class="line">        x = shifted_x</span><br><span class="line">    x = x.view(B, H * W, C)</span><br><span class="line">    x = shortcut + self.drop_path(x)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># FFN</span></span><br><span class="line">    x = x + self.drop_path(self.mlp(self.norm2(x)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>SwinTransformer中Block结构包含LN、W-MSA、LN以及一个MLP操作；</p>
+<p>具体的前向计算过程：</p>
+<ol>
+<li>先进行LayerNorm操作；</li>
+<li>决定是否对特征图进行移位；</li>
+<li>窗口划分；</li>
+<li>计算注意力，包含Window Attention和Shift Window Attention两种情况；</li>
+<li>窗口合并；</li>
+<li>dropout和残差连接；</li>
+<li>MLP；</li>
+</ol>
+<h2 id="swintransformer总体代码"><a class="markdownIt-Anchor" href="#swintransformer总体代码"></a> SwinTransformer总体代码</h2>
+<p>输入以(1, 3, 224, 224)为例，模型设置如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">model = SwinTransformer(</span><br><span class="line">        img_size=<span class="number">224</span>,</span><br><span class="line">        patch_size=<span class="number">4</span>,</span><br><span class="line">        in_chans=<span class="number">3</span>,</span><br><span class="line">        num_classes=<span class="number">1000</span>,</span><br><span class="line">        embed_dim=<span class="number">96</span>,</span><br><span class="line">        depths=[<span class="number">2</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">2</span>],</span><br><span class="line">        num_heads=[<span class="number">3</span>, <span class="number">6</span>, <span class="number">12</span>, <span class="number">24</span>],</span><br><span class="line">        window_size=<span class="number">7</span>,</span><br><span class="line">        mlp_ratio=<span class="number">4.</span>,</span><br><span class="line">        qkv_bias=<span class="literal">True</span>,</span><br><span class="line">        qk_scale=<span class="literal">None</span>,</span><br><span class="line">        drop_rate=<span class="number">0.</span>,</span><br><span class="line">        attn_drop_rate=<span class="number">0.</span>,</span><br><span class="line">        drop_path_rate=<span class="number">0.1</span>,</span><br><span class="line">        norm_layer=nn.LayerNorm,</span><br><span class="line">        ape=<span class="literal">False</span>,</span><br><span class="line">        patch_norm=<span class="literal">True</span>,</span><br><span class="line">        use_checkpoint=<span class="literal">False</span>,</span><br><span class="line">        fused_window_process=<span class="literal">False</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<ol>
+<li>Patch Embedding</li>
+</ol>
+<p>通过模型定义上的img_size、patch_size、in_chans、embed_dim、norm_layer对图像进行分块处理，img_size是输入的图像大小，patch_size是每一个patch的大小（而不是需要将图像划分成patch_size个块），in_chans是输入通道，embed_dim是中间线性投影的维度数目，norm_layer是归一化方法；</p>
+<ol start="2">
+<li>
+<p>添加位置编码</p>
+</li>
+<li>
+<p>构建Layer</p>
+</li>
+</ol>
+<p>layer的层数是depths的长度；<br />
+depths的长度表示SwinTransformer中stage的个数，值表示每一个stage中SwinTransformerBlock的个数，需要为偶数个，因为每一个必须有个窗口注意力和移动窗口注意力两种机制是配对出现的。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/18/Transformer/Transformer/" rel="prev" title="李宏毅Transformer课程记录">
+                  <i class="fa fa-chevron-left"></i> 李宏毅Transformer课程记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/25/SuperResolution/%E6%8C%87%E6%A0%87/metrics/" rel="next" title="超分辨率指标">
+                  超分辨率指标 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+<div class="busuanzi-count">
+
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

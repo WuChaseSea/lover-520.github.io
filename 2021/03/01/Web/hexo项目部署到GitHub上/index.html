@@ -90,7 +90,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -128,9 +132,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
 </nav>
@@ -162,7 +166,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">条件准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">配置过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">3.</span> <span class="nav-text">问题解决</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text"> 条件准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 配置过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">3.</span> <span class="nav-text"> 问题解决</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -178,20 +182,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -306,45 +310,53 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>在完成了整个项目之后，可以通过localhost在浏览器上查看效果，但那只是在本地上查看，可以尝试将代码部署到GitHub上从而别人也可以通过这个网址看到效果。<a id="more"></a></p>
-<h2 id="条件准备"><a href="#条件准备" class="headerlink" title="条件准备"></a>条件准备</h2><p>默认下列条件已经满足：</p>
+<h2 id="条件准备"><a class="markdownIt-Anchor" href="#条件准备"></a> 条件准备</h2>
+<p>默认下列条件已经满足：</p>
 <ul>
 <li>一个完整的hexo项目文件；</li>
 <li>有着配置好的git和GitHub账号；</li>
 </ul>
-<h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><ol>
-<li><p>在GitHub上新建一个项目，像我的用户名是lover-520，那么我的项目名取为lover-520.github.io，至于其他的readme，license等随便；</p>
+<h2 id="配置过程"><a class="markdownIt-Anchor" href="#配置过程"></a> 配置过程</h2>
+<ol>
+<li>
+<p>在GitHub上新建一个项目，像我的用户名是lover-520，<a target="_blank" rel="noopener" href="http://xn--lover-520-fp6nzey42eouax38mud2dqnbn60u0q3a.github.io">那么我的项目名取为lover-520.github.io</a>，至于其他的readme，license等随便；</p>
 </li>
-<li><p>复制GitHub上项目文件的ssh，比如我的是<a href="mailto:&#x67;&#105;&#116;&#x40;&#x67;&#105;&#116;&#104;&#x75;&#x62;&#46;&#99;&#x6f;&#x6d;">&#x67;&#105;&#116;&#x40;&#x67;&#105;&#116;&#104;&#x75;&#x62;&#46;&#99;&#x6f;&#x6d;</a>:lover-520/lover-520.github.io.git；</p>
+<li>
+<p>复制GitHub上项目文件的ssh，比如我的是git@github.com:lover-520/lover-520.github.io.git；</p>
 </li>
-<li><p>在hexo项目配置文件_config.yml中找到deploy改为下面这样：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span></span><br><span class="line">    <span class="attr">github:</span> <span class="string">git@github.com:lover-520/lover-520.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span>  <span class="string">main</span></span><br></pre></td></tr></table></figure></li>
-<li><p>在项目工程目录中执行：</p>
+<li>
+<p>在hexo项目配置文件_config.yml中找到deploy改为下面这样：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span></span><br><span class="line">    <span class="attr">github:</span> <span class="string">git@github.com:lover-520/lover-520.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span>  <span class="string">main</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>在项目工程目录中执行：</p>
 </li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo g</span></span><br></pre></td></tr></table></figure>
 <p>然后</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo d</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo d</span></span><br></pre></td></tr></table></figure>
 <p>按照正常情况嘛，项目文件应该上传到GitHub上去了，然后浏览器中输入<a target="_blank" rel="noopener" href="https://lover-520.github.io/%E5%B0%B1%E8%83%BD%E7%9C%8B%E5%88%B0%E6%95%88%E6%9E%9C%E4%BA%86%EF%BC%8C%E4%BD%86%E6%98%AF%E6%88%91%E5%9C%A8%E9%83%A8%E7%BD%B2%E6%97%B6%EF%BC%8C%E6%B2%A1%E6%9C%89%E6%8A%A5%E9%94%99%EF%BC%8C%E4%B9%9F%E5%88%9B%E5%BB%BA%E4%BA%86.deploy_git%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E4%BD%86%E6%98%AF%E5%8D%B4%E5%B9%B6%E6%B2%A1%E6%9C%89%E4%B8%8A%E4%BC%A0%E5%88%B0GitHub%E4%B8%8A%E5%8E%BB%EF%BC%8C%E6%89%80%E4%BB%A5%E6%89%93%E5%BC%80%E9%82%A3%E4%B8%AA%E7%BD%91%E7%AB%99%E6%98%AF404%E7%95%8C%E9%9D%A2%E3%80%82%EF%BC%88%E4%BD%A0%E8%A6%81%E6%98%AF%E6%B7%BB%E5%8A%A0%E4%BA%86readme%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%9D%E5%B0%B1%E4%B8%8D%E6%98%AF404%EF%BC%89">https://lover-520.github.io/就能看到效果了，但是我在部署时，没有报错，也创建了.deploy_git文件夹，但是却并没有上传到GitHub上去，所以打开那个网站是404界面。（你要是添加了readme文件的话就不是404）</a></p>
-<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>好嘛，没有上传到GitHub上去，那肯定就不能正常显示啊，搜了网上的方法，没有找到方法。然后试了下自己的想法，结果可以行得通，于是在这里记录一下：</p>
+<h2 id="问题解决"><a class="markdownIt-Anchor" href="#问题解决"></a> 问题解决</h2>
+<p>好嘛，没有上传到GitHub上去，那肯定就不能正常显示啊，搜了网上的方法，没有找到方法。然后试了下自己的想法，结果可以行得通，于是在这里记录一下：</p>
 <p>可以发现.deploy_git文件夹里面其实是一个git仓库，那么其实hexo d命令应该是自动把我们的文件上传到GitHub上，那么我们也可以考虑自己将这个文件夹直接上传；</p>
 <p>进入.deploy_git文件夹</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> .deploy_git</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> .deploy_git</span></span><br></pre></td></tr></table></figure>
 <p>先将这个master分支改成main分支：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b main</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge master</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout -b main</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git merge master</span></span><br></pre></td></tr></table></figure>
 <p>然后添加远程仓库：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote add origin git@github.com:lover-520/lover-520.github.io.git</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote add origin git@github.com:lover-520/lover-520.github.io.git</span></span><br></pre></td></tr></table></figure>
 <p>拉取远程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git pull origin main</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git pull origin main</span></span><br></pre></td></tr></table></figure>
 <p>提交</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&#x27;XXX&#x27;</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add .</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit -m <span class="string">&#x27;XXX&#x27;</span></span></span><br></pre></td></tr></table></figure>
 <p>与远程同步</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push</span></span><br></pre></td></tr></table></figure>
 <p>若是出现Updates were rejected 错误，可先执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git pull origin main --allow-unrelated-histories</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git pull origin main --allow-unrelated-histories</span></span><br></pre></td></tr></table></figure>
 <p>然后</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin main</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push origin main</span></span><br></pre></td></tr></table></figure>
 <p>就这样，我们可以发现GitHub上出现了文件，网站也就能正常访问了。那么在添加新博客时，需要执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo d</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo g</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">hexo d</span></span><br></pre></td></tr></table></figure>
 <p>然后再将.deploy_git文件夹的更改同步到GitHub上。</p>
 
     </div>
@@ -460,6 +472,39 @@
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
 
 
 
