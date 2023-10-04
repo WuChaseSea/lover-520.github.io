@@ -129,9 +129,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
 </nav>
@@ -178,20 +178,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -331,7 +331,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/25/SuperResolution/%E6%8C%87%E6%A0%87/metrics/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Segmentation/SAM/base/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/pikaqiu.png">
@@ -344,7 +344,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/03/25/SuperResolution/%E6%8C%87%E6%A0%87/metrics/" class="post-title-link" itemprop="url">超分辨率指标</a>
+          <a href="/2023/10/04/Segmentation/SAM/base/" class="post-title-link" itemprop="url">SAM介绍</a>
         </h2>
 
         <div class="post-meta-container">
@@ -354,16 +354,691 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-03-25 00:33:15" itemprop="dateCreated datePublished" datetime="2023-03-25T00:33:15+08:00">2023-03-25</time>
+      <time title="创建时间：2023-10-04 20:29:29 / 修改时间：20:29:58" itemprop="dateCreated datePublished" datetime="2023-10-04T20:29:29+08:00">2023-10-04</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:05:50" itemprop="dateModified" datetime="2023-09-12T00:05:50+08:00">2023-09-12</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
       </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Segmentation/" itemprop="url" rel="index"><span itemprop="name">Segmentation</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="sam"><a class="markdownIt-Anchor" href="#sam"></a> SAM</h1>
+<h2 id="sam是什么"><a class="markdownIt-Anchor" href="#sam是什么"></a> SAM是什么</h2>
+<p>SAM(Segment Anything)，能够根据提示语实现目标检测和图像分割。</p>
+<p>零样本任务：<br />
+通过提示输入，生成有效mask。提示可以是点，矩形框，文字，mask或者是图像；</p>
+<h2 id="网络"><a class="markdownIt-Anchor" href="#网络"></a> 网络</h2>
+<p>模型结构：<br />
+模型需要支持灵活的提示，且根据不同的提示实时生成mask。模型输出也是模糊的，不表示对象的具体语义信息，例如这是衣服，这是桌子，这是人，而是仅仅只表示这是一个对象。</p>
+<p>模型包括一个prompt encoder，对提示进行编码，image encoder对图像进行编码，生成图像的embedding表示，最后融合两个encoder，接一个轻量的mask decoder，输出最后的mask结果。</p>
+<p><img src="/pic/model_diagram.png" alt="sam model" /></p>
+<p>image encoder</p>
+<p>利用mae预训练的vit，对每张图像运行一次。图像输入大小(c, h, w)，对图像进行缩放成1024，得到(c, 1024, 1024)的图像，再经过image encoder，得到对图像16倍下采样的特征图，大小为(256, 64, 64)</p>
+<p>prompt encoder</p>
+<p>提示编码器包括两类，稀疏</p>
+<p>稀疏提示被映射到256维矢量嵌入表示，一个点包含点的位置，以及指示该点是在前景中还是背景中；一个框则用嵌入对表示，一个可学习的embedding代表左上角，另一个可学习的embedding代表右下角；文本，则通过CLIP模型进行文本编码；</p>
+<p>稠密提示例如masks，与原图有空间联系；用输入图像1/4分辨率大小的mask，最终维度升为256。mask和image embedding通过element-wise逐元素相乘，相当于采用mask的特征图对image的feature进行加权。如果没有mask prompt的话，就会学习一个代表no mask的embedding。</p>
+<p>mask decoder</p>
+<p><img src="/pic/Snipaste_2023-09-09_19-30-39.png" alt="sam mask decoder" /></p>
+<p>该模块旨在将一组prompt embeddings和image embedding映射为输出掩码。首先在prompt embedding中插入一组可学习的token，为了方便，将除了image embedding之外的所有embeddings称为token。decoder层包含4个步骤：<br />
+1）prompt tokens，output tokens做 self attn；<br />
+2）1）得到的tokens做查询，和image embedding做cross attn；<br />
+3）point-wise MLP更新tokens；<br />
+4）用image embedding作查询，和tokens做cross attn；</p>
+<p>为了保证模型具有模糊性意识，因为有时候，一个prompt，例如一个点，它很有可能处于多个mask中。为了缓解这个问题，相比于直接预测一个mask，采用同时预测多个mask的方法。默认是预测三个mask，whole，part，subpart。训练过程中计算三个mask的损失，但是在梯度回传的时候只回传损失值最小的那个。在应用中，添加了一个head用于评估预测的mask和真值之间的IoU。当有多个prompt时，这种模糊现象就会很少，比如说两个点，多个框之类的，这种情况下预测的多个掩码结果就会很接近，为了最大限度减小损失函数，并且确保单个mask能够正确地进行梯度回传，因此当有多个prompt提供时，仅仅只预测一个mask，在代码中实现方式是添加一个output token用于额外的掩码预测，当只有一个prompt时，这个掩码永远不会返回值；当有多个prompt时，仅返回一个掩码。</p>
+<h2 id="数据"><a class="markdownIt-Anchor" href="#数据"></a> 数据</h2>
+<p>数据总图片数：11M；<br />
+数据掩膜数目：1.1B；<br />
+平均一张图片上的标书数目：100；<br />
+平均图片分辨率：1500 x 2250 pixels</p>
+<h2 id="训练策略"><a class="markdownIt-Anchor" href="#训练策略"></a> 训练策略</h2>
+<p>mask损失函数：20：1的focal loss：dice loss<br />
+IoU预测头：mse loss</p>
+<p>训练过程中，prompt产生的方式模拟交互式分割的方式，从目标mask中随机选取前景点或者box。</p>
+<h2 id="代码展示"><a class="markdownIt-Anchor" href="#代码展示"></a> 代码展示</h2>
+<p>GitHub下载网址：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/segment-anything">SAM</a></p>
+<p>image encoder:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ImageEncoderViT</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        img_size: <span class="built_in">int</span> = <span class="number">1024</span>,</span></span><br><span class="line"><span class="params">        patch_size: <span class="built_in">int</span> = <span class="number">16</span>,</span></span><br><span class="line"><span class="params">        in_chans: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        embed_dim: <span class="built_in">int</span> = <span class="number">768</span>,</span></span><br><span class="line"><span class="params">        depth: <span class="built_in">int</span> = <span class="number">12</span>,</span></span><br><span class="line"><span class="params">        num_heads: <span class="built_in">int</span> = <span class="number">12</span>,</span></span><br><span class="line"><span class="params">        mlp_ratio: <span class="built_in">float</span> = <span class="number">4.0</span>,</span></span><br><span class="line"><span class="params">        out_chans: <span class="built_in">int</span> = <span class="number">256</span>,</span></span><br><span class="line"><span class="params">        qkv_bias: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        norm_layer: <span class="type">Type</span>[nn.Module] = nn.LayerNorm,</span></span><br><span class="line"><span class="params">        act_layer: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">        use_abs_pos: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        use_rel_pos: <span class="built_in">bool</span> = <span class="literal">False</span>,</span></span><br><span class="line"><span class="params">        rel_pos_zero_init: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        window_size: <span class="built_in">int</span> = <span class="number">0</span>,</span></span><br><span class="line"><span class="params">        global_attn_indexes: <span class="type">Tuple</span>[<span class="built_in">int</span>, ...] = (<span class="params"></span>),</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            img_size (int): Input image size.</span></span><br><span class="line"><span class="string">            patch_size (int): Patch size.</span></span><br><span class="line"><span class="string">            in_chans (int): Number of input image channels.</span></span><br><span class="line"><span class="string">            embed_dim (int): Patch embedding dimension.</span></span><br><span class="line"><span class="string">            depth (int): Depth of ViT.</span></span><br><span class="line"><span class="string">            num_heads (int): Number of attention heads in each ViT block.</span></span><br><span class="line"><span class="string">            mlp_ratio (float): Ratio of mlp hidden dim to embedding dim.</span></span><br><span class="line"><span class="string">            qkv_bias (bool): If True, add a learnable bias to query, key, value.</span></span><br><span class="line"><span class="string">            norm_layer (nn.Module): Normalization layer.</span></span><br><span class="line"><span class="string">            act_layer (nn.Module): Activation layer.</span></span><br><span class="line"><span class="string">            use_abs_pos (bool): If True, use absolute positional embeddings.</span></span><br><span class="line"><span class="string">            use_rel_pos (bool): If True, add relative positional embeddings to the attention map.</span></span><br><span class="line"><span class="string">            rel_pos_zero_init (bool): If True, zero initialize relative positional parameters.</span></span><br><span class="line"><span class="string">            window_size (int): Window size for window attention blocks.</span></span><br><span class="line"><span class="string">            global_attn_indexes (list): Indexes for blocks using global attention.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.img_size = img_size</span><br><span class="line"></span><br><span class="line">        self.patch_embed = PatchEmbed(</span><br><span class="line">            kernel_size=(patch_size, patch_size),</span><br><span class="line">            stride=(patch_size, patch_size),</span><br><span class="line">            in_chans=in_chans,</span><br><span class="line">            embed_dim=embed_dim,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        self.pos_embed: <span class="type">Optional</span>[nn.Parameter] = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> use_abs_pos:</span><br><span class="line">            <span class="comment"># Initialize absolute positional embedding with pretrain image size.</span></span><br><span class="line">            self.pos_embed = nn.Parameter(</span><br><span class="line">                torch.zeros(<span class="number">1</span>, img_size // patch_size, img_size // patch_size, embed_dim)</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        self.blocks = nn.ModuleList()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(depth):</span><br><span class="line">            block = Block(</span><br><span class="line">                dim=embed_dim,</span><br><span class="line">                num_heads=num_heads,</span><br><span class="line">                mlp_ratio=mlp_ratio,</span><br><span class="line">                qkv_bias=qkv_bias,</span><br><span class="line">                norm_layer=norm_layer,</span><br><span class="line">                act_layer=act_layer,</span><br><span class="line">                use_rel_pos=use_rel_pos,</span><br><span class="line">                rel_pos_zero_init=rel_pos_zero_init,</span><br><span class="line">                window_size=window_size <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> global_attn_indexes <span class="keyword">else</span> <span class="number">0</span>,</span><br><span class="line">                input_size=(img_size // patch_size, img_size // patch_size),</span><br><span class="line">            )</span><br><span class="line">            self.blocks.append(block)</span><br><span class="line"></span><br><span class="line">        self.neck = nn.Sequential(</span><br><span class="line">            nn.Conv2d(</span><br><span class="line">                embed_dim,</span><br><span class="line">                out_chans,</span><br><span class="line">                kernel_size=<span class="number">1</span>,</span><br><span class="line">                bias=<span class="literal">False</span>,</span><br><span class="line">            ),</span><br><span class="line">            LayerNorm2d(out_chans),</span><br><span class="line">            nn.Conv2d(</span><br><span class="line">                out_chans,</span><br><span class="line">                out_chans,</span><br><span class="line">                kernel_size=<span class="number">3</span>,</span><br><span class="line">                padding=<span class="number">1</span>,</span><br><span class="line">                bias=<span class="literal">False</span>,</span><br><span class="line">            ),</span><br><span class="line">            LayerNorm2d(out_chans),</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        x = self.patch_embed(x)</span><br><span class="line">        <span class="keyword">if</span> self.pos_embed <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            x = x + self.pos_embed</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> blk <span class="keyword">in</span> self.blocks:</span><br><span class="line">            x = blk(x)</span><br><span class="line"></span><br><span class="line">        x = self.neck(x.permute(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>输入一个[1 3 512 512]的tensor时，image encoder将会得到一个[1 256 32 32]大小的特征图；</p>
+<p>prompt encoder</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PromptEncoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        embed_dim: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        image_embedding_size: <span class="type">Tuple</span>[<span class="built_in">int</span>, <span class="built_in">int</span>],</span></span><br><span class="line"><span class="params">        input_image_size: <span class="type">Tuple</span>[<span class="built_in">int</span>, <span class="built_in">int</span>],</span></span><br><span class="line"><span class="params">        mask_in_chans: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        activation: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Encodes prompts for input to SAM&#x27;s mask decoder.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          embed_dim (int): The prompts&#x27; embedding dimension</span></span><br><span class="line"><span class="string">          image_embedding_size (tuple(int, int)): The spatial size of the</span></span><br><span class="line"><span class="string">            image embedding, as (H, W).</span></span><br><span class="line"><span class="string">          input_image_size (int): The padded size of the image as input</span></span><br><span class="line"><span class="string">            to the image encoder, as (H, W).</span></span><br><span class="line"><span class="string">          mask_in_chans (int): The number of hidden channels used for</span></span><br><span class="line"><span class="string">            encoding input masks.</span></span><br><span class="line"><span class="string">          activation (nn.Module): The activation to use when encoding</span></span><br><span class="line"><span class="string">            input masks.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.embed_dim = embed_dim</span><br><span class="line">        self.input_image_size = input_image_size</span><br><span class="line">        self.image_embedding_size = image_embedding_size</span><br><span class="line">        self.pe_layer = PositionEmbeddingRandom(embed_dim // <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        self.num_point_embeddings: <span class="built_in">int</span> = <span class="number">4</span>  <span class="comment"># pos/neg point + 2 box corners</span></span><br><span class="line">        point_embeddings = [nn.Embedding(<span class="number">1</span>, embed_dim) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.num_point_embeddings)]</span><br><span class="line">        self.point_embeddings = nn.ModuleList(point_embeddings)</span><br><span class="line">        self.not_a_point_embed = nn.Embedding(<span class="number">1</span>, embed_dim)</span><br><span class="line"></span><br><span class="line">        self.mask_input_size = (<span class="number">4</span> * image_embedding_size[<span class="number">0</span>], <span class="number">4</span> * image_embedding_size[<span class="number">1</span>])</span><br><span class="line">        self.mask_downscaling = nn.Sequential(</span><br><span class="line">            nn.Conv2d(<span class="number">1</span>, mask_in_chans // <span class="number">4</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(mask_in_chans // <span class="number">4</span>),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.Conv2d(mask_in_chans // <span class="number">4</span>, mask_in_chans, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(mask_in_chans),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.Conv2d(mask_in_chans, embed_dim, kernel_size=<span class="number">1</span>),</span><br><span class="line">        )</span><br><span class="line">        self.no_mask_embed = nn.Embedding(<span class="number">1</span>, embed_dim)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_dense_pe</span>(<span class="params">self</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns the positional encoding used to encode point prompts,</span></span><br><span class="line"><span class="string">        applied to a dense set of points the shape of the image encoding.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: Positional encoding with shape</span></span><br><span class="line"><span class="string">            1x(embed_dim)x(embedding_h)x(embedding_w)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.pe_layer(self.image_embedding_size).unsqueeze(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_points</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: torch.Tensor,</span></span><br><span class="line"><span class="params">        labels: torch.Tensor,</span></span><br><span class="line"><span class="params">        pad: <span class="built_in">bool</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds point prompts.&quot;&quot;&quot;</span></span><br><span class="line">        points = points + <span class="number">0.5</span>  <span class="comment"># Shift to center of pixel</span></span><br><span class="line">        <span class="keyword">if</span> pad:</span><br><span class="line">            padding_point = torch.zeros((points.shape[<span class="number">0</span>], <span class="number">1</span>, <span class="number">2</span>), device=points.device)</span><br><span class="line">            padding_label = -torch.ones((labels.shape[<span class="number">0</span>], <span class="number">1</span>), device=labels.device)</span><br><span class="line">            points = torch.cat([points, padding_point], dim=<span class="number">1</span>)</span><br><span class="line">            labels = torch.cat([labels, padding_label], dim=<span class="number">1</span>)</span><br><span class="line">        point_embedding = self.pe_layer.forward_with_coords(points, self.input_image_size)</span><br><span class="line">        point_embedding[labels == -<span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">        point_embedding[labels == -<span class="number">1</span>] += self.not_a_point_embed.weight</span><br><span class="line">        point_embedding[labels == <span class="number">0</span>] += self.point_embeddings[<span class="number">0</span>].weight</span><br><span class="line">        point_embedding[labels == <span class="number">1</span>] += self.point_embeddings[<span class="number">1</span>].weight</span><br><span class="line">        <span class="keyword">return</span> point_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_boxes</span>(<span class="params">self, boxes: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds box prompts.&quot;&quot;&quot;</span></span><br><span class="line">        boxes = boxes + <span class="number">0.5</span>  <span class="comment"># Shift to center of pixel</span></span><br><span class="line">        coords = boxes.reshape(-<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        corner_embedding = self.pe_layer.forward_with_coords(coords, self.input_image_size)</span><br><span class="line">        corner_embedding[:, <span class="number">0</span>, :] += self.point_embeddings[<span class="number">2</span>].weight</span><br><span class="line">        corner_embedding[:, <span class="number">1</span>, :] += self.point_embeddings[<span class="number">3</span>].weight</span><br><span class="line">        <span class="keyword">return</span> corner_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_masks</span>(<span class="params">self, masks: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds mask inputs.&quot;&quot;&quot;</span></span><br><span class="line">        mask_embedding = self.mask_downscaling(masks)</span><br><span class="line">        <span class="keyword">return</span> mask_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_get_batch_size</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: <span class="type">Optional</span>[<span class="type">Tuple</span>[torch.Tensor, torch.Tensor]],</span></span><br><span class="line"><span class="params">        boxes: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">        masks: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Gets the batch size of the output given the batch size of the input prompts.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> points <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> points[<span class="number">0</span>].shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> boxes <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> boxes.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> masks <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> masks.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_get_device</span>(<span class="params">self</span>) -&gt; torch.device:</span><br><span class="line">        <span class="keyword">return</span> self.point_embeddings[<span class="number">0</span>].weight.device</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: <span class="type">Optional</span>[<span class="type">Tuple</span>[torch.Tensor, torch.Tensor]],</span></span><br><span class="line"><span class="params">        boxes: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">        masks: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Tuple</span>[torch.Tensor, torch.Tensor]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Embeds different types of prompts, returning both sparse and dense</span></span><br><span class="line"><span class="string">        embeddings.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          points (tuple(torch.Tensor, torch.Tensor) or none): point coordinates</span></span><br><span class="line"><span class="string">            and labels to embed.</span></span><br><span class="line"><span class="string">          boxes (torch.Tensor or none): boxes to embed</span></span><br><span class="line"><span class="string">          masks (torch.Tensor or none): masks to embed</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: sparse embeddings for the points and boxes, with shape</span></span><br><span class="line"><span class="string">            BxNx(embed_dim), where N is determined by the number of input points</span></span><br><span class="line"><span class="string">            and boxes.</span></span><br><span class="line"><span class="string">          torch.Tensor: dense embeddings for the masks, in the shape</span></span><br><span class="line"><span class="string">            Bx(embed_dim)x(embed_H)x(embed_W)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        bs = self._get_batch_size(points, boxes, masks)</span><br><span class="line">        sparse_embeddings = torch.empty((bs, <span class="number">0</span>, self.embed_dim), device=self._get_device())</span><br><span class="line">        <span class="keyword">if</span> points <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            coords, labels = points</span><br><span class="line">            point_embeddings = self._embed_points(coords, labels, pad=(boxes <span class="keyword">is</span> <span class="literal">None</span>))</span><br><span class="line">            sparse_embeddings = torch.cat([sparse_embeddings, point_embeddings], dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> boxes <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            box_embeddings = self._embed_boxes(boxes)</span><br><span class="line">            sparse_embeddings = torch.cat([sparse_embeddings, box_embeddings], dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> masks <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            dense_embeddings = self._embed_masks(masks)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            dense_embeddings = self.no_mask_embed.weight.reshape(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).expand(</span><br><span class="line">                bs, -<span class="number">1</span>, self.image_embedding_size[<span class="number">0</span>], self.image_embedding_size[<span class="number">1</span>]</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sparse_embeddings, dense_embeddings</span><br></pre></td></tr></table></figure>
+<p>对点、边框、掩膜分别生成稀疏表示、密集表示；</p>
+<p>mask encoder</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MaskDecoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        *,</span></span><br><span class="line"><span class="params">        transformer_dim: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        transformer: nn.Module,</span></span><br><span class="line"><span class="params">        num_multimask_outputs: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        activation: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">        iou_head_depth: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        iou_head_hidden_dim: <span class="built_in">int</span> = <span class="number">256</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Predicts masks given an image and prompt embeddings, using a</span></span><br><span class="line"><span class="string">        transformer architecture.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          transformer_dim (int): the channel dimension of the transformer</span></span><br><span class="line"><span class="string">          transformer (nn.Module): the transformer used to predict masks</span></span><br><span class="line"><span class="string">          num_multimask_outputs (int): the number of masks to predict</span></span><br><span class="line"><span class="string">            when disambiguating masks</span></span><br><span class="line"><span class="string">          activation (nn.Module): the type of activation to use when</span></span><br><span class="line"><span class="string">            upscaling masks</span></span><br><span class="line"><span class="string">          iou_head_depth (int): the depth of the MLP used to predict</span></span><br><span class="line"><span class="string">            mask quality</span></span><br><span class="line"><span class="string">          iou_head_hidden_dim (int): the hidden dimension of the MLP</span></span><br><span class="line"><span class="string">            used to predict mask quality</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.transformer_dim = transformer_dim</span><br><span class="line">        self.transformer = transformer</span><br><span class="line"></span><br><span class="line">        self.num_multimask_outputs = num_multimask_outputs</span><br><span class="line"></span><br><span class="line">        self.iou_token = nn.Embedding(<span class="number">1</span>, transformer_dim)</span><br><span class="line">        self.num_mask_tokens = num_multimask_outputs + <span class="number">1</span></span><br><span class="line">        self.mask_tokens = nn.Embedding(self.num_mask_tokens, transformer_dim)</span><br><span class="line"></span><br><span class="line">        self.output_upscaling = nn.Sequential(</span><br><span class="line">            nn.ConvTranspose2d(transformer_dim, transformer_dim // <span class="number">4</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(transformer_dim // <span class="number">4</span>),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.ConvTranspose2d(transformer_dim // <span class="number">4</span>, transformer_dim // <span class="number">8</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            activation(),</span><br><span class="line">        )</span><br><span class="line">        self.output_hypernetworks_mlps = nn.ModuleList(</span><br><span class="line">            [</span><br><span class="line">                MLP(transformer_dim, transformer_dim, transformer_dim // <span class="number">8</span>, <span class="number">3</span>)</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.num_mask_tokens)</span><br><span class="line">            ]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        self.iou_prediction_head = MLP(</span><br><span class="line">            transformer_dim, iou_head_hidden_dim, self.num_mask_tokens, iou_head_depth</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        image_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        image_pe: torch.Tensor,</span></span><br><span class="line"><span class="params">        sparse_prompt_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        dense_prompt_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        multimask_output: <span class="built_in">bool</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Tuple</span>[torch.Tensor, torch.Tensor]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Predict masks given image and prompt embeddings.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          image_embeddings (torch.Tensor): the embeddings from the image encoder</span></span><br><span class="line"><span class="string">          image_pe (torch.Tensor): positional encoding with the shape of image_embeddings</span></span><br><span class="line"><span class="string">          sparse_prompt_embeddings (torch.Tensor): the embeddings of the points and boxes</span></span><br><span class="line"><span class="string">          dense_prompt_embeddings (torch.Tensor): the embeddings of the mask inputs</span></span><br><span class="line"><span class="string">          multimask_output (bool): Whether to return multiple masks or a single</span></span><br><span class="line"><span class="string">            mask.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: batched predicted masks</span></span><br><span class="line"><span class="string">          torch.Tensor: batched predictions of mask quality</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        masks, iou_pred = self.predict_masks(</span><br><span class="line">            image_embeddings=image_embeddings,</span><br><span class="line">            image_pe=image_pe,</span><br><span class="line">            sparse_prompt_embeddings=sparse_prompt_embeddings,</span><br><span class="line">            dense_prompt_embeddings=dense_prompt_embeddings,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Select the correct mask or masks for output</span></span><br><span class="line">        <span class="keyword">if</span> multimask_output:</span><br><span class="line">            mask_slice = <span class="built_in">slice</span>(<span class="number">1</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            mask_slice = <span class="built_in">slice</span>(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        masks = masks[:, mask_slice, :, :]</span><br><span class="line">        iou_pred = iou_pred[:, mask_slice]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Prepare output</span></span><br><span class="line">        <span class="keyword">return</span> masks, iou_pred</span><br></pre></td></tr></table></figure>
+<p>生成最终预测结果</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>（1）SAM的结构，图像编码，提示编码，轻量掩码解码；结构还是挺清楚的；<br />
+（2）SAM的微调，还得看看RSPrompter的新结构；</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Segmentation/SAM/sam-adaptor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/Segmentation/SAM/sam-adaptor/" class="post-title-link" itemprop="url">SAM-Adapter介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:29:29 / 修改时间：20:30:36" itemprop="dateCreated datePublished" datetime="2023-10-04T20:29:29+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Segmentation/" itemprop="url" rel="index"><span itemprop="name">Segmentation</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="sam-adapter"><a class="markdownIt-Anchor" href="#sam-adapter"></a> SAM-Adapter</h1>
+<p>SAM-Adapter是首个将Adapter与SAM进行结合的结构，并在阴影检测和伪装物体检测上相交于之前的SoTA方法有较大的提升；</p>
+<p>GitHub链接：<a target="_blank" rel="noopener" href="https://github.com/tianrun-chen/SAM-Adapter-PyTorch">SAM-Adapter</a></p>
+<h2 id="sam-adapter结构"><a class="markdownIt-Anchor" href="#sam-adapter结构"></a> SAM-Adapter结构</h2>
+<p>网络结构：</p>
+<p><img src="/pic/Snipaste_2023-09-20_22-38-22.png" alt="architecture" /></p>
+<p>由于原始SAM结构包含三部分，image encoder，prompt encoder和mask encoder。在SAM的基础上，SAM-Adapter只用了image encoder和mask encoder两部分，与SAM不同的是，SAM-Adapter添加了prompt信息，而prompt是根据原始任务确定的：</p>
+<p><img src="/pic/Snipaste_2023-09-20_22-43-26.png" alt="prompt" /></p>
+<p>其中，MLP结构有权值共享和不共享两部分；image encoder部分的参数是固定的，最终的mask encoder是微调的；<br />
+在代码中，image encoder的参数是稍微有点区别的，因为中间有prompt信息，而mask encoder的代码则是与SAM的代码一致；<br />
+SAM-Adapter的代码集成在mmseg中；</p>
+<h2 id="训练过程"><a class="markdownIt-Anchor" href="#训练过程"></a> 训练过程</h2>
+<p>在SAM-Adapter的训练过程中，采用requires_grad_(false)函数将image encoder中的非prompt部分参数固定住，将该参数设置成不被跟踪；</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/PyQT/base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/PyQT/base/" class="post-title-link" itemprop="url">PyQT开发</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:27:27 / 修改时间：20:27:33" itemprop="dateCreated datePublished" datetime="2023-10-04T20:27:27+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/PyQT/" itemprop="url" rel="index"><span itemprop="name">PyQT</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="pyqt使用"><a class="markdownIt-Anchor" href="#pyqt使用"></a> PyQT使用</h1>
+<p>目前PyQT的版本已经有PyQT5更新成PyQT6；</p>
+<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
+<p>安装语句：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">conda create -n develop python=3.9</span><br><span class="line">conda activate develop</span><br><span class="line">pip install sip</span><br><span class="line">pip install PyQt6</span><br><span class="line">pip install PyQt6-tools</span><br></pre></td></tr></table></figure>
+<p>安装完之后输入下述语句将会打开qtdesigner，这里可以拖动工具设计界面，后缀名是.ui文件；</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyqt6-tools designer</span><br></pre></td></tr></table></figure>
+<p>保存ui文件之后，需要将ui文件转换成py代码；</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyuic6 -x onestopcd.ui -o onestopcd_ui.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-x 参数后是ui文件；</li>
+<li>-o 参数后是待保存的py文件；</li>
+</ul>
+<h2 id="代码"><a class="markdownIt-Anchor" href="#代码"></a> 代码</h2>
+<h2 id="美化"><a class="markdownIt-Anchor" href="#美化"></a> 美化</h2>
+<p>可搜索pyqt美化，没有更深研究；</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Pytorch/%E5%AD%A6%E4%B9%A0%E7%8E%87/LearningRate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/Pytorch/%E5%AD%A6%E4%B9%A0%E7%8E%87/LearningRate/" class="post-title-link" itemprop="url">Pytorch 学习率</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:25:50 / 修改时间：20:26:17" itemprop="dateCreated datePublished" datetime="2023-10-04T20:25:50+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="学习率"><a class="markdownIt-Anchor" href="#学习率"></a> 学习率</h1>
+<h2 id="超参数学习率"><a class="markdownIt-Anchor" href="#超参数学习率"></a> 超参数学习率</h2>
+<p>学习率是深度学习中常用的一个超参数，决定了模型在训练过程中权重的变化过程。但是，选择正确的学习率值是很有挑战性的。一方面，一个大学习率能够帮助算法快速收敛，但是也会引起算法在最小值附近反弹而到达不了最小值，甚至可能会跳过最小值。另一方面，一个小学习率能够更好地收敛至最小值，但是优化器可能会花费更多时间才能收敛或者陷入一个停滞状态。</p>
+<h2 id="学习率调整策略"><a class="markdownIt-Anchor" href="#学习率调整策略"></a> 学习率调整策略</h2>
+<p>为了解决学习率设置过大过小的问题，帮助算法快速收敛至最小值的一个有效策略是使用学习率调度器。一般来说，学习率在训练的初始过程中设置一个较大值以达到快速收敛的目的。在训练过程中学习率不断减小，保证收敛至最小值以获得更好的性能。</p>
+<p>StepLR</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> StepLR</span><br><span class="line"></span><br><span class="line">scheduler = StepLR(optimizer, </span><br><span class="line">                   step_size = <span class="number">4</span>, <span class="comment"># Period of learning rate decay</span></span><br><span class="line">                   gamma = <span class="number">0.5</span>) <span class="comment"># Multiplicative factor of learning rate decay</span></span><br></pre></td></tr></table></figure>
+<p><img src="/pic/1_wFMvRnA4NTLdt-1GTcz4Eg.webp" alt="steplr" /></p>
+<p>MultiStepLR</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> MultiStepLR</span><br><span class="line"></span><br><span class="line">scheduler = MultiStepLR(optimizer, </span><br><span class="line">                        milestones=[<span class="number">8</span>, <span class="number">24</span>, <span class="number">28</span>], <span class="comment"># List of epoch indices</span></span><br><span class="line">                        gamma =<span class="number">0.5</span>) <span class="comment"># Multiplicative factor of learning rate decay</span></span><br></pre></td></tr></table></figure>
+<p><img src="/pic/1_6dKtKQWqVbsSx5q3kHFxMg.webp" alt="multisteplr" /></p>
+<p>ConstantLR</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> ConstantLR</span><br><span class="line"></span><br><span class="line">scheduler = ConstantLR(optimizer, </span><br><span class="line">                       factor = <span class="number">0.5</span>, <span class="comment"># The number we multiply learning rate until the milestone.</span></span><br><span class="line">                       total_iters = <span class="number">8</span>) <span class="comment"># The number of steps that the scheduler decays the learning rate</span></span><br></pre></td></tr></table></figure>
+<p><img src="/pic/1_b-Au1Km8D2HXA2ya2VJV4w.webp" alt="conatantlr" /></p>
+<p>在ConstantLR策略中，当factor小于1时，该策略将会增大学习率而不是减小；</p>
+<p>LinearLR</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> LinearLR</span><br><span class="line"></span><br><span class="line">scheduler = LinearLR(optimizer, </span><br><span class="line">                     start_factor = <span class="number">0.5</span>, <span class="comment"># The number we multiply learning rate in the first epoch</span></span><br><span class="line">                     total_iters = <span class="number">8</span>) <span class="comment"># The number of iterations that multiplicative factor reaches to 1</span></span><br></pre></td></tr></table></figure>
+<p><img src="/pic/1_b-Au1Km8D2HXA2ya2VJV4w.webp" alt="conatantlr" /></p>
+<p>ExponentialLR</p>
+<p>指数学习率在每一个training step中通过一个乘法倍数减小学习率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> ExponentialLR</span><br><span class="line"></span><br><span class="line">scheduler = ExponentialLR(optimizer, </span><br><span class="line">                          gamma = <span class="number">0.5</span>) <span class="comment"># Multiplicative factor of learning rate decay.</span></span><br></pre></td></tr></table></figure>
+<p>PolynomialLR</p>
+<p>通过一个预定义的多项式减小学习率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> PolynomialLR</span><br><span class="line"></span><br><span class="line">scheduler = PolynomialLR(optimizer, </span><br><span class="line">                         total_iters = <span class="number">8</span>, <span class="comment"># The number of steps that the scheduler decays the learning rate.</span></span><br><span class="line">                         power = <span class="number">1</span>) <span class="comment"># The power of the polynomial.</span></span><br></pre></td></tr></table></figure>
+<p>CosineAnnealingLR</p>
+<p>以余弦函数的方式减小学习率。从技术上讲，这个学习率调整是任意的，但是，其想法是在最大迭代次数的半个周期内衰减学习率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> CosineAnnealingLR</span><br><span class="line"></span><br><span class="line">scheduler = CosineAnnealingLR(optimizer,</span><br><span class="line">                              T_max = <span class="number">32</span>, <span class="comment"># Maximum number of iterations.</span></span><br><span class="line">                             eta_min = <span class="number">1e-4</span>) <span class="comment"># Minimum learning rate.</span></span><br></pre></td></tr></table></figure>
+<p>CosineAnnealingWarnRestartsLR</p>
+<p>与CosineAnnealingLR类似，但是CosineAnnealingWarnRestartsLR能够对每个epoch以预定义的学习率进行重启。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim.lr_scheduler <span class="keyword">import</span> CosineAnnealingWarmRestarts</span><br><span class="line">scheduler = CosineAnnealingWarmRestarts(optimizer, </span><br><span class="line">                                        T_0 = <span class="number">8</span>,<span class="comment"># Number of iterations for the first restart</span></span><br><span class="line">                                        T_mult = <span class="number">1</span>, <span class="comment"># A factor increases TiTi​ after a restart</span></span><br><span class="line">                                        eta_min = <span class="number">1e-4</span>) <span class="comment"># Minimum learning rate</span></span><br></pre></td></tr></table></figure>
+<p>CyclicLR</p>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/a-visual-guide-to-learning-rate-schedulers-in-pytorch-24bbb262c863">https://towardsdatascience.com/a-visual-guide-to-learning-rate-schedulers-in-pytorch-24bbb262c863</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Pytorch/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/Pytorch/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/base/" class="post-title-link" itemprop="url">Pytorch 损失函数</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:25:25 / 修改时间：20:25:13" itemprop="dateCreated datePublished" datetime="2023-10-04T20:25:25+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="损失函数"><a class="markdownIt-Anchor" href="#损失函数"></a> 损失函数</h1>
+<h2 id="语义分割"><a class="markdownIt-Anchor" href="#语义分割"></a> 语义分割</h2>
+<p>(1) 交叉熵损失函数<br />
+实现方式有：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line">nn.BCELoss(F.sigmoid(<span class="built_in">input</span>), target)  <span class="comment"># 二元交叉熵</span></span><br><span class="line">nn.CrossEntropyLoss(<span class="built_in">input</span>, target) <span class="comment"># 多分类交叉熵</span></span><br></pre></td></tr></table></figure>
+<p>当背景数量，y=0的数量远大于前景像素数量，y=1的数量，损失函数中y=0的成分占主导，模型偏向于背景；</p>
+<p>(2) 带权交叉熵</p>
+<p>(3) Focal Loss</p>
+<p>(4) Dice Loss<br />
+dice是一个评价指标，dice loss = 1 - dice metric；<br />
+一般情况下使用Dice Loss会有反向传播不利的影响，训练不稳定；</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Pytorch/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/Pytorch/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/base/" class="post-title-link" itemprop="url">Pytorch常见问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:24:24 / 修改时间：20:24:37" itemprop="dateCreated datePublished" datetime="2023-10-04T20:24:24+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="pytorch常见问题"><a class="markdownIt-Anchor" href="#pytorch常见问题"></a> Pytorch常见问题</h1>
+<p>问题：训练阶段可以正常运行，验证阶段出现cuda out of memory的问题</p>
+<p>解决方法：在调用模型进行验证或者预测时，加上with torch.no_grad</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">with torch.no_grad():  <span class="comment"># 加上这句</span></span><br><span class="line">    outputs = model.forward(data)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/" class="post-title-link" itemprop="url">目标检测YOLO系列</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:22:22 / 修改时间：20:23:04" itemprop="dateCreated datePublished" datetime="2023-10-04T20:22:22+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ObjectDetection/" itemprop="url" rel="index"><span itemprop="name">ObjectDetection</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="yolo笔记"><a class="markdownIt-Anchor" href="#yolo笔记"></a> YOLO笔记</h1>
+<p>目标检测模型分为两类，Region-free（单阶段方法）， Region-based（两阶段方法）</p>
+<p>目标检测的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测每张图片的标注信息是所包含的N个实例框，每个框都有标注信息，中心位置、高和宽，以及类别。</p>
+<h2 id="两阶段方法"><a class="markdownIt-Anchor" href="#两阶段方法"></a> 两阶段方法</h2>
+<p>当图片中有多个类别时，需要将每一个类型都识别出来。那么在正常的识别过程中，会遇到的问题有：1）物体位置不确定，物体可能位于图像边缘，可能位于图像中间；2）物体大小不确定，物体可能在图像中占据大部分区域，也可能仅仅只有几个像素；3）物体种类不确定，一张图像中可能出现多个物体种类；</p>
+<p>最原始的方法就是采用滑动窗口一个个地识别物体。如果一个物体正好出现在一个滑窗中，那么就将这个滑窗位置认为是这个物体所在的位置。滑窗每次滑动的距离是步长。为了保证每个物体都在一个滑窗中，可以将步长设置很小。同时，考虑到有不同大小的物体，滑窗也可以设置成不同大小。因此，这种方法在识别过程中，会设计不同大小的窗口，按照最小步长滑动，将窗口中的所有图片都放入分类器中。但是会花费大量时间。而R-CNN则会提前生成一系列窗口，就会节省大量时间。</p>
+<h2 id="yolo"><a class="markdownIt-Anchor" href="#yolo"></a> YOLO</h2>
+<p>YOLOv1于2015年提出；</p>
+<p>YOLO系列与两阶段算法不同，两阶段算法是优先算好哪些地方会出现物体，然后对这些框进行排除；而YOLO是直接对整张图像提取物体信息。</p>
+<p>YOLO的第一步是分割图片，将图片分割成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>s</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">s^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>个格子，每个格子的大小都是相等的。如果这些框每一个只能识别一个物体，并且要求物体必须落在这个框之内，那么就和以前的滑窗法没有任何区别了。但是YOLO认为只要求物体的中心落在这个框之中就好了。</p>
+<p>对于每个框都预测B个bounding box，其中有5个值，中心位置（x，y）、h、w，以及这次预测的置信度c，每个框还需要有一个类别，假设有C个类别，用one-hot编码表示，因此整张图的ground truth长度为：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>×</mo><mi>S</mi><mo>×</mo><mo stretchy="false">(</mo><mi>B</mi><mo>×</mo><mn>5</mn><mo>+</mo><mi>C</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">S \times S \times (B \times 5 + C)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mclose">)</span></span></span></span></p>
+<p>YOLO的CNN网络将图片分割成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>s</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">s^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>个格子，每个单元格负责去检测哪些中心点落在该格子内的目标。如图所示，狗这个目标的中心落在这个单元格内，那么这个单元格就负责预测这个狗。每个边界框的置信度包含两个方面，一是这个边界框含有目标的可能性大小 $Pr(object) <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，当该边界框是背景时，即不含目标，此时该值为</mtext><mn>0</mn><mtext>，当该边界框包含目标时，该值为</mtext><mn>1</mn><mtext>，二是这个边界框的准确度。边界框的准确度用预测框与实际框的</mtext><mi>I</mi><mi>O</mi><mi>U</mi><mtext>特征来表示，记为</mtext></mrow><annotation encoding="application/x-tex">，当该边界框是背景时，即不含目标，此时该值为0，当该边界框包含目标时，该值为1，二是这个边界框的准确度。边界框的准确度用预测框与实际框的IOU特征来表示，记为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">当</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">背</span><span class="mord cjk_fallback">景</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">即</span><span class="mord cjk_fallback">不</span><span class="mord cjk_fallback">含</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">此</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">为</span><span class="mord">0</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">当</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">包</span><span class="mord cjk_fallback">含</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">为</span><span class="mord">1</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">二</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">准</span><span class="mord cjk_fallback">确</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">准</span><span class="mord cjk_fallback">确</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">际</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback">特</span><span class="mord cjk_fallback">征</span><span class="mord cjk_fallback">来</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">记</span><span class="mord cjk_fallback">为</span></span></span></span> IOU_{pred}^{truth}<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo separator="true">,</mo><mtext>因此置信度表示为</mtext></mrow><annotation encoding="application/x-tex">,因此置信度表示为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord cjk_fallback">因</span><span class="mord cjk_fallback">此</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">为</span></span></span></span> Pr(object)*IOU_{pred}^{truth}<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>。边界框的大小与位置可以用</mtext><mn>4</mn><mtext>个值来表示：</mtext></mrow><annotation encoding="application/x-tex">。边界框的大小与位置可以用4个值来表示：</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">大</span><span class="mord cjk_fallback">小</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">可</span><span class="mord cjk_fallback">以</span><span class="mord cjk_fallback">用</span><span class="mord">4</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">来</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">：</span></span></span></span>(x,y,w,h)<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，每个边界框的预测值实际上包含</mtext><mn>5</mn><mtext>个元素：</mtext></mrow><annotation encoding="application/x-tex">，每个边界框的预测值实际上包含5个元素：</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">每</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">际</span><span class="mord cjk_fallback">上</span><span class="mord cjk_fallback">包</span><span class="mord cjk_fallback">含</span><span class="mord">5</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">素</span><span class="mord cjk_fallback">：</span></span></span></span>(x,y,w,h,c)<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，其中前</mtext><mn>4</mn><mtext>个表示边界框的大小与位置，而最后一个值是置信度。对于每一个单元格，还需要给出</mtext><mi>C</mi><mtext>个类别概率值，表示的是由该单元格负责预测的边界框其目标属于各个类别的概率。这些概率值是在各个边界框置信度下的条件概率，即</mtext></mrow><annotation encoding="application/x-tex">，其中前4个表示边界框的大小与位置，而最后一个值是置信度。对于每一个单元格，还需要给出C个类别概率值，表示的是由该单元格负责预测的边界框其目标属于各个类别的概率。这些概率值是在各个边界框置信度下的条件概率，即</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">中</span><span class="mord cjk_fallback">前</span><span class="mord">4</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">大</span><span class="mord cjk_fallback">小</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">而</span><span class="mord cjk_fallback">最</span><span class="mord cjk_fallback">后</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">对</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">每</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">格</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">还</span><span class="mord cjk_fallback">需</span><span class="mord cjk_fallback">要</span><span class="mord cjk_fallback">给</span><span class="mord cjk_fallback">出</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">类</span><span class="mord cjk_fallback">别</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">由</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">格</span><span class="mord cjk_fallback">负</span><span class="mord cjk_fallback">责</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">属</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">各</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">类</span><span class="mord cjk_fallback">别</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">些</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">各</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">下</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">条</span><span class="mord cjk_fallback">件</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">即</span></span></span></span> Pr(class_i|object)$，但是这种方法，不管一个单元格中预测多少个边界框，只能预测一组类别概率值，这意味着一个格子只能负责一个目标的预测。</p>
+<p><img src="/pic/Snipaste_2023-04-24_20-42-59.png" alt="img1" /></p>
+<p>以PASCAL VOC数据为例，其中共有20个类别，如果使用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>7</mn><mo separator="true">,</mo><mi>B</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">S=7, B=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>，那么最终的预测结果就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><mn>7</mn><mo>×</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">7 \times 7 \times 30</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">0</span></span></span></span>大小的张量，30的计算是5乘以2加上20，因为最后的类别是用one-hot编码表示的，所以需要加上20。</p>
+<p>YOLO采用卷积神经网络来提取特征，最后网络输出<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><mn>7</mn><mo>×</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">7 \times 7 \times 30</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">0</span></span></span></span>大小的张量，其张量所代表的含义是，对每一个单元格，前20个值是类别概率值，然后2个是边界框置信度，最后8个是边界框的(x,y,w,h)。</p>
+<p><img src="/pic/Snipaste_2023-04-24_23-20-13.png" alt="img2" /></p>
+<p>最后是需要了解一下所使用的训练损失函数。该损失函数由两部分组成，定位误差和分类误差。定位误差是边界框坐标预测误差，采用较大的权重<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>c</mi><mi>o</mi><mi>o</mi><mi>r</mi><mi>d</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\lambda_{coord}=5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span></span></span></span>，定位误差中区分不包含目标的边界框与含有目标的边界框的置信度。对于不包含目标的边界框，采用较小的权重值<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>n</mi><mi>o</mi><mi>o</mi><mi>b</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\lambda_{noobj}=0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span></span></span></span>，其余权重均设为1。由于较小边界框的坐标误差应该要比较大边界框更敏感，因此将网络的边界框的宽高预测改为对其平方根的预测。由于每个单元格预测多个边界框，但是其对应类别只有一个，那么在训练时，该单元格内存在目标的话，只选择与ground truth IOU最大的那个边界框负责预测该目标，而其他边界框认为不存在目标。这样可以保证一个单元格对应的边界框更加专业化，其可以适用于不同大小、不同高宽比的目标，从而提升模型性能。但是缺点在于如果一个单元格内确实存在多个目标的话，YOLO就只能选择其中一个来进行训练。</p>
+<p><img src="/pic/Snipaste_2023-04-25_15-22-22.png" alt="img2" /></p>
+<p>损失函数第一项，边界框中心坐标的误差项，对每一个单元格中的每一个边界框，有目标的就计算中心坐标误差损失；<br />
+第二项，边界框高宽的误差项；<br />
+第三项，对包含目标的边界框的置信度误差项；<br />
+第四项，不包含目标的边界框的置信度误差项；<br />
+第五项，包含目标的单元格的分类误差；</p>
+<p>非极大值抑制算法（non maximum suppression, NMS），用于解决一个目标被多次预测的问题，就是一个目标出现了多个框的问题。从所有检测框中找到置信度最大的框，然后挨个计算其与剩余框的IOU，如果IOU大于一定阈值，就将该框剔除；反复该过程，直至处理完所有的检测框。</p>
+<p>优点：比二阶段方法快；<br />
+缺点：每一个网格仅预测两个框，并且每个网格的预测类别有限，不适合物体密集情况；</p>
+<h2 id="yolo-v2"><a class="markdownIt-Anchor" href="#yolo-v2"></a> YOLO-v2</h2>
+<p>同一作者针对V1存在的问题，于2017年进行了修改，包括：更改骨干网络；引入PassThrough；借鉴二阶段方法的思想添加预选框；</p>
+<p>骨干网络换成了Darknet-19，有1000个类别；passthrough其实就和跳跃连接差不多；Fast RCNN和RCNN都是使用selective search搜选预选框的，而Faster RCNN中提出了RPN的网络，因此YOLOv2结合了RPN网络，对特征图生成anchor boxes；</p>
+<h2 id="yolo-v3"><a class="markdownIt-Anchor" href="#yolo-v3"></a> YOLO-v3</h2>
+<p>同一作者于2018年提出了YOLOv3结构，主要改进是引入了残差结构，并借助特征金字塔FPN的思路，在三个不同的尺寸上分别进行预测；</p>
+<h2 id="yolo-v4"><a class="markdownIt-Anchor" href="#yolo-v4"></a> YOLO-v4</h2>
+<p>2020年，其余团队在YOLOv3的基础上进行大量修改和改进之后提出了YOLOv4结构；改进其实是用了很多的策略；</p>
+<h2 id="yolo-v5"><a class="markdownIt-Anchor" href="#yolo-v5"></a> YOLO-v5</h2>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/" class="post-title-link" itemprop="url">超分辨率主观指标</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:17:15 / 修改时间：20:17:24" itemprop="dateCreated datePublished" datetime="2023-10-04T20:17:15+08:00">2023-10-04</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -386,15 +1061,64 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>超分辨率领域使用的评价指标的记录。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/25/SuperResolution/%E6%8C%87%E6%A0%87/metrics/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h1 id="关于指标的欺骗方式"><a class="markdownIt-Anchor" href="#关于指标的欺骗方式"></a> 关于指标的欺骗方式</h1>
+<p>本笔记翻译于 <a target="_blank" rel="noopener" href="https://videoprocessing.ai/metrics/ways-of-cheating-on-popular-objective-metrics.html">Ways of cheating on popular objective metrics: blurring, noise, super-resolution and others</a></p>
+<h2 id="引言"><a class="markdownIt-Anchor" href="#引言"></a> 引言</h2>
+<p>在超分辨率论文中，PSNR始终是估计SR图像的最流行标准，始终占主导地位。</p>
+<p><img src="/pic/pic2.png" alt="论文指标统计" /></p>
+<p>PSNR指标的流行与其特征有关：</p>
+<ul>
+<li>易于计算，指标的运行时间是许多实际应用程序的关键因素；</li>
+<li>使用历史悠久，经历了长时间实验的验证。很容易将新算法的性能与仅使用PSNR评估的旧算法进行比较；</li>
+<li>具有明确的物理含义；</li>
+<li>在数学含义上具有方便的优化方便；</li>
+</ul>
+<h2 id="著名的批评例子"><a class="markdownIt-Anchor" href="#著名的批评例子"></a> 著名的批评例子</h2>
+<p>下图中对原始图像进行不同类型的失真，包括对比度、压缩、模糊、噪声，并且从图像中可以发现改变后的图像具有明显不同的1视觉质量。但是，失真图像的MSE分数是相同的。</p>
+<p><img src="/pic/pic3.png" alt="指标批判例子" /></p>
+<p>另一个例子是，MSE分数几乎相同，但正确图像的视觉质量要好很多，SSIM指标更真实地处理了这一点。</p>
+<p><img src="/pic/pic4.png" alt="指标批判例子2" /></p>
+<p>发生这种情况的原因在于SSIM能够衡量结构相似性，而MSE则没有。这是SSIM与PSNR的真正区别。人类视觉系统对扭曲高度敏感。</p>
+<p>然后，SSIM也会遇到与PSNR相同的问题，仍然会出现SSIM分数相同，但视觉质量差异很大的情况；</p>
+<p><img src="/pic/pic5.png" alt="指标批判例子3" /></p>
+<h2 id="模型"><a class="markdownIt-Anchor" href="#模型"></a> 模型</h2>
+<p>很多时候图像的退化过程中存在模糊的影像，但是对于模型的图像，MSE无法评断图像的好坏，这个时候SSIM则能更准确地反映这一事实。</p>
+<p><img src="/pic/pic7.png" alt="指标批判例子4" /></p>
+<p>但是SSIM估计模糊量的能力也存在一些不确定的情况，比如下图中SSIM为0.73和0.74的情况不清楚它们在模糊方面是否大致相同，大多数人会觉得SSIM=0.74的图像更模糊。</p>
+<p><img src="/pic/pic8.png" alt="指标批判例子5" /></p>
+<p>因此有研究证明在将指标用作优化网络模型的目标时，基于DIST和LPIPS指标在去模糊任务中由于其他IQA（图像质量评估）模型。</p>
+<h2 id="噪声"><a class="markdownIt-Anchor" href="#噪声"></a> 噪声</h2>
+<p>MS-SSMI在去噪任务上优于其他的IQA模型；</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>PSNR指标不是质量评估的良好指标，有太多参数高度影响PSNR值，几乎不影响视觉质量。另一方面，与PSNR指标相比，SSIM指标具有更好的性能，但SSIM对亮度、对比度、色调和饱和度的变化几乎不敏感。</p>
+<p>然后，工业界和研究人员仍然普遍使用经典方法，尽管有很多批判，这并不意味着有些方法是坏的，有些是好的，只需明确定义任何指标的适用性边界。根据研究：</p>
+<p>PSNR适用于：</p>
+<ul>
+<li>测试不同的编解码器优化策略，旨在最大限度地提高指定内定的主观质量（即优化之前的内容保持不变）；</li>
+<li>捕获噪音；</li>
+<li>捕捉亮度、对比度、色调和饱和度的变化；</li>
+</ul>
+<p>但不能应用于：</p>
+<ul>
+<li>估计与内容相关的失真；</li>
+<li>捕捉模糊；</li>
+<li>当内容在测试之间保持不变时测试不同的编解码器质量；</li>
+<li>超分辨率算法的质量评估；</li>
+<li>捕获旋转和空间偏移；</li>
+</ul>
+<p>SSIM适用于：</p>
+<ul>
+<li>估计与内容相关的失真；</li>
+<li>捕获噪音；</li>
+<li>捕捉模糊；</li>
+</ul>
+<p>但不能应用于：</p>
+<ul>
+<li>超分辨率算法的质量评估；</li>
+<li>捕获旋转和空间偏移；</li>
+<li>捕捉亮度、对比度、色调和饱和度的变化；</li>
+</ul>
+
       
     </div>
 
@@ -420,7 +1144,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/18/Transformer/SwinTransformer/Noted/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/GAN/TransGAN/Notes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/pikaqiu.png">
@@ -433,7 +1157,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/03/18/Transformer/SwinTransformer/Noted/" class="post-title-link" itemprop="url">Swin Transformer代码记录</a>
+          <a href="/2023/10/04/GAN/TransGAN/Notes/" class="post-title-link" itemprop="url">生成对抗网络TransGAN</a>
         </h2>
 
         <div class="post-meta-container">
@@ -443,23 +1167,17 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-03-18 00:17:45" itemprop="dateCreated datePublished" datetime="2023-03-18T00:17:45+08:00">2023-03-18</time>
+      <time title="创建时间：2023-10-04 20:14:11 / 修改时间：20:14:34" itemprop="dateCreated datePublished" datetime="2023-10-04T20:14:11+08:00">2023-10-04</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:06:35" itemprop="dateModified" datetime="2023-09-12T00:06:35+08:00">2023-09-12</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Transformer/" itemprop="url" rel="index"><span itemprop="name">Transformer</span></a>
+          <a href="/categories/GAN/" itemprop="url" rel="index"><span itemprop="name">GAN</span></a>
         </span>
     </span>
 
@@ -475,15 +1193,20 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>关于SwinTransformer的代码详解。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/18/Transformer/SwinTransformer/Noted/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h1 id="transgan"><a class="markdownIt-Anchor" href="#transgan"></a> TransGAN</h1>
+<h2 id="意义"><a class="markdownIt-Anchor" href="#意义"></a> 意义</h2>
+<p>Transformer在分类、分割和检测中已经成为一个通用模型；本文尝试探索Transformer在计算机视觉困难任务上的应用，<strong>尝试构建一个完全无卷积的GAN网络结构</strong>。</p>
+<h2 id="网络结构"><a class="markdownIt-Anchor" href="#网络结构"></a> 网络结构</h2>
+<p><img src="/pic/Snipaste_2023-01-02_13-32-50.png" alt="network" /></p>
+<h2 id="generator"><a class="markdownIt-Anchor" href="#generator"></a> Generator</h2>
+<p>生成器采用分阶段逐步提升分辨率生成图像的过程。</p>
+<h2 id="discrminator"><a class="markdownIt-Anchor" href="#discrminator"></a> Discrminator</h2>
+<p>判别器的目的是区分图片的真假，该结构中采用一种多尺度的结构，在不用阶段以不同的图像块作为输入，能够同时考虑语义特征和结构细节信息。</p>
+<p>从图中的结构来看，分层结构；先将图像分成P*P个patch，然后通过线性加权将维度改成C/4，后面两层结构类似，只是patch的大小不同。第一层特征逐步降低分辨率然后与后面的特征进行叠加操作；最后在结构末尾添加CLS位置信息，以输出真假预测；</p>
+<p>从代码来看：<br />
+并没有用到这种多层级的结构，代码库中有个变量一直都是未定义；<br />
+<img src="/pic/Snipaste_2023-01-02_15-29-20.png" alt="parameter" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forward_features</span>(<span class="params">self, x</span>):</span><br><span class="line">    <span class="keyword">if</span> self.args[<span class="string">&#x27;diff_aug&#x27;</span>]:</span><br><span class="line">        x = DiffAugment(x, self.args.diff_aug, <span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    B = x.shape[<span class="number">0</span>]</span><br><span class="line">    x = self.patch_embed(x).flatten(<span class="number">2</span>).permute(<span class="number">0</span>,<span class="number">2</span>,<span class="number">1</span>)  <span class="comment"># x (1, 64, 64) 第一个64是64个patch块，第二个64是通道</span></span><br><span class="line"></span><br><span class="line">    cls_tokens = self.cls_token.expand(B, -<span class="number">1</span>, -<span class="number">1</span>)  <span class="comment"># stole cls_tokens impl from Phil Wang, thanks</span></span><br><span class="line">    x = torch.cat((cls_tokens, x), dim=<span class="number">1</span>)  <span class="comment"># x (1, 65, 64)</span></span><br><span class="line">    x = x + self.pos_embed</span><br><span class="line">    x = self.pos_drop(x)</span><br><span class="line">    <span class="keyword">for</span> blk <span class="keyword">in</span> self.blocks:</span><br><span class="line">        x = blk(x)</span><br><span class="line">    x = self.norm(x)  <span class="comment"># x (1, 65, 64)</span></span><br><span class="line">    <span class="keyword">return</span> x[:,<span class="number">0</span>]  <span class="comment"># (1, 64) 返回第一个位置的值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">    <span class="comment"># x (1, 3, 64, 64)</span></span><br><span class="line">    x = self.forward_features(x)  <span class="comment"># 特征提取过程  x (1, 64)</span></span><br><span class="line">    x = self.head(x)  <span class="comment"># 线性层转换为2分类真假预测问题 (1, 2)</span></span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -501,533 +1224,9 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/18/Transformer/Transformer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/03/18/Transformer/Transformer/" class="post-title-link" itemprop="url">李宏毅Transformer课程记录</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-03-18 00:07:34" itemprop="dateCreated datePublished" datetime="2023-03-18T00:07:34+08:00">2023-03-18</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:06:21" itemprop="dateModified" datetime="2023-09-12T00:06:21+08:00">2023-09-12</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Transformer/" itemprop="url" rel="index"><span itemprop="name">Transformer</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>李宏毅老师课程中关于Transformer的讲解记录。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/18/Transformer/Transformer/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/06/GDAL/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/06/GDAL/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/" class="post-title-link" itemprop="url">遥感图像合并</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-06 16:17:10" itemprop="dateCreated datePublished" datetime="2021-03-06T16:17:10+08:00">2021-03-06</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:07:29" itemprop="dateModified" datetime="2023-09-12T00:07:29+08:00">2023-09-12</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>从文件夹中读取小范围的遥感影像并合并成一大图
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/06/GDAL/%E5%90%88%E5%B9%B6%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/06/Python/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/06/Python/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/" class="post-title-link" itemprop="url">绘制柱状图</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-06 16:16:28" itemprop="dateCreated datePublished" datetime="2021-03-06T16:16:28+08:00">2021-03-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>常用图表的绘制
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/06/Python/%E7%BB%98%E5%88%B6%E6%9F%B1%E7%8A%B6%E5%9B%BE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/01/Web/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/01/Web/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/" class="post-title-link" itemprop="url">hexo部署到GitHub</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-01 21:40:20" itemprop="dateCreated datePublished" datetime="2021-03-01T21:40:20+08:00">2021-03-01</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:08:13" itemprop="dateModified" datetime="2023-09-12T00:08:13+08:00">2023-09-12</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>在完成了整个项目之后，可以通过localhost在浏览器上查看效果，但那只是在本地上查看，可以尝试将代码部署到GitHub上从而别人也可以通过这个网址看到效果。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/01/Web/hexo%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/22/Web/%E5%88%9D%E6%AC%A1%E5%B0%9D%E8%AF%95hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/22/Web/%E5%88%9D%E6%AC%A1%E5%B0%9D%E8%AF%95hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">初次尝试hexo</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-22 15:21:20" itemprop="dateCreated datePublished" datetime="2021-02-22T15:21:20+08:00">2021-02-22</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:07:15" itemprop="dateModified" datetime="2023-09-12T00:07:15+08:00">2023-09-12</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>在网上搜索怎么搭建个人博客的时候，也是发现了hexo这个框架，发现里面的主题也是挺丰富的，就尝试了使用hexo搭建自己的博客网站。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/22/Web/%E5%88%9D%E6%AC%A1%E5%B0%9D%E8%AF%95hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/21/Web/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pikaqiu.png">
-      <meta itemprop="name" content="ZM W">
-      <meta itemprop="description" content="心之所向，素履以往">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lover">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/21/Web/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item" style="/* display: none; */">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-21 14:53:52" itemprop="dateCreated datePublished" datetime="2021-02-21T14:53:52+08:00">2021-02-21</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-12 00:07:52" itemprop="dateModified" datetime="2023-09-12T00:07:52+08:00">2023-09-12</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-          
-          
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/21/Web/hello-world/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 <script>

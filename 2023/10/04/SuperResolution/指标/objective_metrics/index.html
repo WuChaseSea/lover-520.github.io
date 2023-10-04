@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="关于指标的欺骗方式 本笔记翻译于 Ways of cheating on popular objective metrics: blurring, noise, super-resolution and others  引言 在超分辨率论文中，PSNR始终是估计SR图像的最流行标准，始终占主导地位。  PSNR指标的流行与其特征有关：  易于计算，指标的运行时间是许多实际应用程序的关键因素； 使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超分辨率主观指标">
+<meta property="og:url" content="http://example.com/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="关于指标的欺骗方式 本笔记翻译于 Ways of cheating on popular objective metrics: blurring, noise, super-resolution and others  引言 在超分辨率论文中，PSNR始终是估计SR图像的最流行标准，始终占主导地位。  PSNR指标的流行与其特征有关：  易于计算，指标的运行时间是许多实际应用程序的关键因素； 使">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/pic/pic2.png">
+<meta property="og:image" content="http://example.com/pic/pic3.png">
+<meta property="og:image" content="http://example.com/pic/pic4.png">
+<meta property="og:image" content="http://example.com/pic/pic5.png">
+<meta property="og:image" content="http://example.com/pic/pic7.png">
+<meta property="og:image" content="http://example.com/pic/pic8.png">
+<meta property="article:published_time" content="2023-10-04T12:17:15.000Z">
+<meta property="article:modified_time" content="2023-10-04T12:17:24.106Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="metrics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/pic/pic2.png">
+
+
+<link rel="canonical" href="http://example.com/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>超分辨率主观指标 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%8C%87%E6%A0%87%E7%9A%84%E6%AC%BA%E9%AA%97%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text"> 关于指标的欺骗方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%91%97%E5%90%8D%E7%9A%84%E6%89%B9%E8%AF%84%E4%BE%8B%E5%AD%90"><span class="nav-number">1.2.</span> <span class="nav-text"> 著名的批评例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text"> 模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0"><span class="nav-number">1.4.</span> <span class="nav-text"> 噪声</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          超分辨率主观指标
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:17:15 / 修改时间：20:17:24" itemprop="dateCreated datePublished" datetime="2023-10-04T20:17:15+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SuperResolution/" itemprop="url" rel="index"><span itemprop="name">SuperResolution</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="关于指标的欺骗方式"><a class="markdownIt-Anchor" href="#关于指标的欺骗方式"></a> 关于指标的欺骗方式</h1>
+<p>本笔记翻译于 <a target="_blank" rel="noopener" href="https://videoprocessing.ai/metrics/ways-of-cheating-on-popular-objective-metrics.html">Ways of cheating on popular objective metrics: blurring, noise, super-resolution and others</a></p>
+<h2 id="引言"><a class="markdownIt-Anchor" href="#引言"></a> 引言</h2>
+<p>在超分辨率论文中，PSNR始终是估计SR图像的最流行标准，始终占主导地位。</p>
+<p><img src="/pic/pic2.png" alt="论文指标统计" /></p>
+<p>PSNR指标的流行与其特征有关：</p>
+<ul>
+<li>易于计算，指标的运行时间是许多实际应用程序的关键因素；</li>
+<li>使用历史悠久，经历了长时间实验的验证。很容易将新算法的性能与仅使用PSNR评估的旧算法进行比较；</li>
+<li>具有明确的物理含义；</li>
+<li>在数学含义上具有方便的优化方便；</li>
+</ul>
+<h2 id="著名的批评例子"><a class="markdownIt-Anchor" href="#著名的批评例子"></a> 著名的批评例子</h2>
+<p>下图中对原始图像进行不同类型的失真，包括对比度、压缩、模糊、噪声，并且从图像中可以发现改变后的图像具有明显不同的1视觉质量。但是，失真图像的MSE分数是相同的。</p>
+<p><img src="/pic/pic3.png" alt="指标批判例子" /></p>
+<p>另一个例子是，MSE分数几乎相同，但正确图像的视觉质量要好很多，SSIM指标更真实地处理了这一点。</p>
+<p><img src="/pic/pic4.png" alt="指标批判例子2" /></p>
+<p>发生这种情况的原因在于SSIM能够衡量结构相似性，而MSE则没有。这是SSIM与PSNR的真正区别。人类视觉系统对扭曲高度敏感。</p>
+<p>然后，SSIM也会遇到与PSNR相同的问题，仍然会出现SSIM分数相同，但视觉质量差异很大的情况；</p>
+<p><img src="/pic/pic5.png" alt="指标批判例子3" /></p>
+<h2 id="模型"><a class="markdownIt-Anchor" href="#模型"></a> 模型</h2>
+<p>很多时候图像的退化过程中存在模糊的影像，但是对于模型的图像，MSE无法评断图像的好坏，这个时候SSIM则能更准确地反映这一事实。</p>
+<p><img src="/pic/pic7.png" alt="指标批判例子4" /></p>
+<p>但是SSIM估计模糊量的能力也存在一些不确定的情况，比如下图中SSIM为0.73和0.74的情况不清楚它们在模糊方面是否大致相同，大多数人会觉得SSIM=0.74的图像更模糊。</p>
+<p><img src="/pic/pic8.png" alt="指标批判例子5" /></p>
+<p>因此有研究证明在将指标用作优化网络模型的目标时，基于DIST和LPIPS指标在去模糊任务中由于其他IQA（图像质量评估）模型。</p>
+<h2 id="噪声"><a class="markdownIt-Anchor" href="#噪声"></a> 噪声</h2>
+<p>MS-SSMI在去噪任务上优于其他的IQA模型；</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>PSNR指标不是质量评估的良好指标，有太多参数高度影响PSNR值，几乎不影响视觉质量。另一方面，与PSNR指标相比，SSIM指标具有更好的性能，但SSIM对亮度、对比度、色调和饱和度的变化几乎不敏感。</p>
+<p>然后，工业界和研究人员仍然普遍使用经典方法，尽管有很多批判，这并不意味着有些方法是坏的，有些是好的，只需明确定义任何指标的适用性边界。根据研究：</p>
+<p>PSNR适用于：</p>
+<ul>
+<li>测试不同的编解码器优化策略，旨在最大限度地提高指定内定的主观质量（即优化之前的内容保持不变）；</li>
+<li>捕获噪音；</li>
+<li>捕捉亮度、对比度、色调和饱和度的变化；</li>
+</ul>
+<p>但不能应用于：</p>
+<ul>
+<li>估计与内容相关的失真；</li>
+<li>捕捉模糊；</li>
+<li>当内容在测试之间保持不变时测试不同的编解码器质量；</li>
+<li>超分辨率算法的质量评估；</li>
+<li>捕获旋转和空间偏移；</li>
+</ul>
+<p>SSIM适用于：</p>
+<ul>
+<li>估计与内容相关的失真；</li>
+<li>捕获噪音；</li>
+<li>捕捉模糊；</li>
+</ul>
+<p>但不能应用于：</p>
+<ul>
+<li>超分辨率算法的质量评估；</li>
+<li>捕获旋转和空间偏移；</li>
+<li>捕捉亮度、对比度、色调和饱和度的变化；</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/metrics/" rel="tag"># metrics</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/04/GAN/TransGAN/Notes/" rel="prev" title="生成对抗网络TransGAN">
+                  <i class="fa fa-chevron-left"></i> 生成对抗网络TransGAN
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/" rel="next" title="目标检测YOLO系列">
+                  目标检测YOLO系列 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+<div class="busuanzi-count">
+
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

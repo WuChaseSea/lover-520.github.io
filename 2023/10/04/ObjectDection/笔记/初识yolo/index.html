@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="YOLO笔记 目标检测模型分为两类，Region-free（单阶段方法）， Region-based（两阶段方法） 目标检测的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测每张图片的标注信息是所包含的N个实例框，每个框都有标注信息，中心位置、高和宽，以及类别。  两阶段方法 当图片中有多个类别时，需要将每一个类型都识别出来。那么在正常的识别过程中，会遇到的问题有：1）物体位置不确定，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="目标检测YOLO系列">
+<meta property="og:url" content="http://example.com/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="YOLO笔记 目标检测模型分为两类，Region-free（单阶段方法）， Region-based（两阶段方法） 目标检测的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测每张图片的标注信息是所包含的N个实例框，每个框都有标注信息，中心位置、高和宽，以及类别。  两阶段方法 当图片中有多个类别时，需要将每一个类型都识别出来。那么在正常的识别过程中，会遇到的问题有：1）物体位置不确定，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2023-04-24_20-42-59.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2023-04-24_23-20-13.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2023-04-25_15-22-22.png">
+<meta property="article:published_time" content="2023-10-04T12:22:22.000Z">
+<meta property="article:modified_time" content="2023-10-04T12:23:04.207Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="YOLO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/pic/Snipaste_2023-04-24_20-42-59.png">
+
+
+<link rel="canonical" href="http://example.com/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>目标检测YOLO系列 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#yolo%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text"> YOLO笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text"> 两阶段方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yolo"><span class="nav-number">1.2.</span> <span class="nav-text"> YOLO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yolo-v2"><span class="nav-number">1.3.</span> <span class="nav-text"> YOLO-v2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yolo-v3"><span class="nav-number">1.4.</span> <span class="nav-text"> YOLO-v3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yolo-v4"><span class="nav-number">1.5.</span> <span class="nav-text"> YOLO-v4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yolo-v5"><span class="nav-number">1.6.</span> <span class="nav-text"> YOLO-v5</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          目标检测YOLO系列
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:22:22 / 修改时间：20:23:04" itemprop="dateCreated datePublished" datetime="2023-10-04T20:22:22+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ObjectDetection/" itemprop="url" rel="index"><span itemprop="name">ObjectDetection</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="yolo笔记"><a class="markdownIt-Anchor" href="#yolo笔记"></a> YOLO笔记</h1>
+<p>目标检测模型分为两类，Region-free（单阶段方法）， Region-based（两阶段方法）</p>
+<p>目标检测的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测每张图片的标注信息是所包含的N个实例框，每个框都有标注信息，中心位置、高和宽，以及类别。</p>
+<h2 id="两阶段方法"><a class="markdownIt-Anchor" href="#两阶段方法"></a> 两阶段方法</h2>
+<p>当图片中有多个类别时，需要将每一个类型都识别出来。那么在正常的识别过程中，会遇到的问题有：1）物体位置不确定，物体可能位于图像边缘，可能位于图像中间；2）物体大小不确定，物体可能在图像中占据大部分区域，也可能仅仅只有几个像素；3）物体种类不确定，一张图像中可能出现多个物体种类；</p>
+<p>最原始的方法就是采用滑动窗口一个个地识别物体。如果一个物体正好出现在一个滑窗中，那么就将这个滑窗位置认为是这个物体所在的位置。滑窗每次滑动的距离是步长。为了保证每个物体都在一个滑窗中，可以将步长设置很小。同时，考虑到有不同大小的物体，滑窗也可以设置成不同大小。因此，这种方法在识别过程中，会设计不同大小的窗口，按照最小步长滑动，将窗口中的所有图片都放入分类器中。但是会花费大量时间。而R-CNN则会提前生成一系列窗口，就会节省大量时间。</p>
+<h2 id="yolo"><a class="markdownIt-Anchor" href="#yolo"></a> YOLO</h2>
+<p>YOLOv1于2015年提出；</p>
+<p>YOLO系列与两阶段算法不同，两阶段算法是优先算好哪些地方会出现物体，然后对这些框进行排除；而YOLO是直接对整张图像提取物体信息。</p>
+<p>YOLO的第一步是分割图片，将图片分割成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>s</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">s^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>个格子，每个格子的大小都是相等的。如果这些框每一个只能识别一个物体，并且要求物体必须落在这个框之内，那么就和以前的滑窗法没有任何区别了。但是YOLO认为只要求物体的中心落在这个框之中就好了。</p>
+<p>对于每个框都预测B个bounding box，其中有5个值，中心位置（x，y）、h、w，以及这次预测的置信度c，每个框还需要有一个类别，假设有C个类别，用one-hot编码表示，因此整张图的ground truth长度为：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>×</mo><mi>S</mi><mo>×</mo><mo stretchy="false">(</mo><mi>B</mi><mo>×</mo><mn>5</mn><mo>+</mo><mi>C</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">S \times S \times (B \times 5 + C)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mclose">)</span></span></span></span></p>
+<p>YOLO的CNN网络将图片分割成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>s</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">s^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>个格子，每个单元格负责去检测哪些中心点落在该格子内的目标。如图所示，狗这个目标的中心落在这个单元格内，那么这个单元格就负责预测这个狗。每个边界框的置信度包含两个方面，一是这个边界框含有目标的可能性大小 $Pr(object) <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，当该边界框是背景时，即不含目标，此时该值为</mtext><mn>0</mn><mtext>，当该边界框包含目标时，该值为</mtext><mn>1</mn><mtext>，二是这个边界框的准确度。边界框的准确度用预测框与实际框的</mtext><mi>I</mi><mi>O</mi><mi>U</mi><mtext>特征来表示，记为</mtext></mrow><annotation encoding="application/x-tex">，当该边界框是背景时，即不含目标，此时该值为0，当该边界框包含目标时，该值为1，二是这个边界框的准确度。边界框的准确度用预测框与实际框的IOU特征来表示，记为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">当</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">背</span><span class="mord cjk_fallback">景</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">即</span><span class="mord cjk_fallback">不</span><span class="mord cjk_fallback">含</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">此</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">为</span><span class="mord">0</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">当</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">包</span><span class="mord cjk_fallback">含</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">为</span><span class="mord">1</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">二</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">准</span><span class="mord cjk_fallback">确</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">准</span><span class="mord cjk_fallback">确</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">际</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback">特</span><span class="mord cjk_fallback">征</span><span class="mord cjk_fallback">来</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">记</span><span class="mord cjk_fallback">为</span></span></span></span> IOU_{pred}^{truth}<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo separator="true">,</mo><mtext>因此置信度表示为</mtext></mrow><annotation encoding="application/x-tex">,因此置信度表示为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord cjk_fallback">因</span><span class="mord cjk_fallback">此</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">为</span></span></span></span> Pr(object)*IOU_{pred}^{truth}<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>。边界框的大小与位置可以用</mtext><mn>4</mn><mtext>个值来表示：</mtext></mrow><annotation encoding="application/x-tex">。边界框的大小与位置可以用4个值来表示：</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">大</span><span class="mord cjk_fallback">小</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">可</span><span class="mord cjk_fallback">以</span><span class="mord cjk_fallback">用</span><span class="mord">4</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">来</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">：</span></span></span></span>(x,y,w,h)<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，每个边界框的预测值实际上包含</mtext><mn>5</mn><mtext>个元素：</mtext></mrow><annotation encoding="application/x-tex">，每个边界框的预测值实际上包含5个元素：</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">每</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">际</span><span class="mord cjk_fallback">上</span><span class="mord cjk_fallback">包</span><span class="mord cjk_fallback">含</span><span class="mord">5</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">素</span><span class="mord cjk_fallback">：</span></span></span></span>(x,y,w,h,c)<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>，其中前</mtext><mn>4</mn><mtext>个表示边界框的大小与位置，而最后一个值是置信度。对于每一个单元格，还需要给出</mtext><mi>C</mi><mtext>个类别概率值，表示的是由该单元格负责预测的边界框其目标属于各个类别的概率。这些概率值是在各个边界框置信度下的条件概率，即</mtext></mrow><annotation encoding="application/x-tex">，其中前4个表示边界框的大小与位置，而最后一个值是置信度。对于每一个单元格，还需要给出C个类别概率值，表示的是由该单元格负责预测的边界框其目标属于各个类别的概率。这些概率值是在各个边界框置信度下的条件概率，即</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">中</span><span class="mord cjk_fallback">前</span><span class="mord">4</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">大</span><span class="mord cjk_fallback">小</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">而</span><span class="mord cjk_fallback">最</span><span class="mord cjk_fallback">后</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">对</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">每</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">格</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">还</span><span class="mord cjk_fallback">需</span><span class="mord cjk_fallback">要</span><span class="mord cjk_fallback">给</span><span class="mord cjk_fallback">出</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">类</span><span class="mord cjk_fallback">别</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">表</span><span class="mord cjk_fallback">示</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">由</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord cjk_fallback">格</span><span class="mord cjk_fallback">负</span><span class="mord cjk_fallback">责</span><span class="mord cjk_fallback">预</span><span class="mord cjk_fallback">测</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">标</span><span class="mord cjk_fallback">属</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">各</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">类</span><span class="mord cjk_fallback">别</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">些</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">各</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">界</span><span class="mord cjk_fallback">框</span><span class="mord cjk_fallback">置</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">下</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">条</span><span class="mord cjk_fallback">件</span><span class="mord cjk_fallback">概</span><span class="mord cjk_fallback">率</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">即</span></span></span></span> Pr(class_i|object)$，但是这种方法，不管一个单元格中预测多少个边界框，只能预测一组类别概率值，这意味着一个格子只能负责一个目标的预测。</p>
+<p><img src="/pic/Snipaste_2023-04-24_20-42-59.png" alt="img1" /></p>
+<p>以PASCAL VOC数据为例，其中共有20个类别，如果使用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>7</mn><mo separator="true">,</mo><mi>B</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">S=7, B=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>，那么最终的预测结果就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><mn>7</mn><mo>×</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">7 \times 7 \times 30</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">0</span></span></span></span>大小的张量，30的计算是5乘以2加上20，因为最后的类别是用one-hot编码表示的，所以需要加上20。</p>
+<p>YOLO采用卷积神经网络来提取特征，最后网络输出<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><mn>7</mn><mo>×</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">7 \times 7 \times 30</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">0</span></span></span></span>大小的张量，其张量所代表的含义是，对每一个单元格，前20个值是类别概率值，然后2个是边界框置信度，最后8个是边界框的(x,y,w,h)。</p>
+<p><img src="/pic/Snipaste_2023-04-24_23-20-13.png" alt="img2" /></p>
+<p>最后是需要了解一下所使用的训练损失函数。该损失函数由两部分组成，定位误差和分类误差。定位误差是边界框坐标预测误差，采用较大的权重<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>c</mi><mi>o</mi><mi>o</mi><mi>r</mi><mi>d</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\lambda_{coord}=5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span></span></span></span>，定位误差中区分不包含目标的边界框与含有目标的边界框的置信度。对于不包含目标的边界框，采用较小的权重值<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>n</mi><mi>o</mi><mi>o</mi><mi>b</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\lambda_{noobj}=0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span></span></span></span>，其余权重均设为1。由于较小边界框的坐标误差应该要比较大边界框更敏感，因此将网络的边界框的宽高预测改为对其平方根的预测。由于每个单元格预测多个边界框，但是其对应类别只有一个，那么在训练时，该单元格内存在目标的话，只选择与ground truth IOU最大的那个边界框负责预测该目标，而其他边界框认为不存在目标。这样可以保证一个单元格对应的边界框更加专业化，其可以适用于不同大小、不同高宽比的目标，从而提升模型性能。但是缺点在于如果一个单元格内确实存在多个目标的话，YOLO就只能选择其中一个来进行训练。</p>
+<p><img src="/pic/Snipaste_2023-04-25_15-22-22.png" alt="img2" /></p>
+<p>损失函数第一项，边界框中心坐标的误差项，对每一个单元格中的每一个边界框，有目标的就计算中心坐标误差损失；<br />
+第二项，边界框高宽的误差项；<br />
+第三项，对包含目标的边界框的置信度误差项；<br />
+第四项，不包含目标的边界框的置信度误差项；<br />
+第五项，包含目标的单元格的分类误差；</p>
+<p>非极大值抑制算法（non maximum suppression, NMS），用于解决一个目标被多次预测的问题，就是一个目标出现了多个框的问题。从所有检测框中找到置信度最大的框，然后挨个计算其与剩余框的IOU，如果IOU大于一定阈值，就将该框剔除；反复该过程，直至处理完所有的检测框。</p>
+<p>优点：比二阶段方法快；<br />
+缺点：每一个网格仅预测两个框，并且每个网格的预测类别有限，不适合物体密集情况；</p>
+<h2 id="yolo-v2"><a class="markdownIt-Anchor" href="#yolo-v2"></a> YOLO-v2</h2>
+<p>同一作者针对V1存在的问题，于2017年进行了修改，包括：更改骨干网络；引入PassThrough；借鉴二阶段方法的思想添加预选框；</p>
+<p>骨干网络换成了Darknet-19，有1000个类别；passthrough其实就和跳跃连接差不多；Fast RCNN和RCNN都是使用selective search搜选预选框的，而Faster RCNN中提出了RPN的网络，因此YOLOv2结合了RPN网络，对特征图生成anchor boxes；</p>
+<h2 id="yolo-v3"><a class="markdownIt-Anchor" href="#yolo-v3"></a> YOLO-v3</h2>
+<p>同一作者于2018年提出了YOLOv3结构，主要改进是引入了残差结构，并借助特征金字塔FPN的思路，在三个不同的尺寸上分别进行预测；</p>
+<h2 id="yolo-v4"><a class="markdownIt-Anchor" href="#yolo-v4"></a> YOLO-v4</h2>
+<p>2020年，其余团队在YOLOv3的基础上进行大量修改和改进之后提出了YOLOv4结构；改进其实是用了很多的策略；</p>
+<h2 id="yolo-v5"><a class="markdownIt-Anchor" href="#yolo-v5"></a> YOLO-v5</h2>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/YOLO/" rel="tag"># YOLO</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/04/SuperResolution/%E6%8C%87%E6%A0%87/objective_metrics/" rel="prev" title="超分辨率主观指标">
+                  <i class="fa fa-chevron-left"></i> 超分辨率主观指标
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/04/Pytorch/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/base/" rel="next" title="Pytorch常见问题">
+                  Pytorch常见问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+<div class="busuanzi-count">
+
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

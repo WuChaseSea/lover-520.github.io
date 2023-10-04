@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/chat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/chat-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="SAM  SAM是什么 SAM(Segment Anything)，能够根据提示语实现目标检测和图像分割。 零样本任务： 通过提示输入，生成有效mask。提示可以是点，矩形框，文字，mask或者是图像；  网络 模型结构： 模型需要支持灵活的提示，且根据不同的提示实时生成mask。模型输出也是模糊的，不表示对象的具体语义信息，例如这是衣服，这是桌子，这是人，而是仅仅只表示这是一个对象。 模型包括">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SAM介绍">
+<meta property="og:url" content="http://example.com/2023/10/04/Segmentation/SAM/base/index.html">
+<meta property="og:site_name" content="Lover">
+<meta property="og:description" content="SAM  SAM是什么 SAM(Segment Anything)，能够根据提示语实现目标检测和图像分割。 零样本任务： 通过提示输入，生成有效mask。提示可以是点，矩形框，文字，mask或者是图像；  网络 模型结构： 模型需要支持灵活的提示，且根据不同的提示实时生成mask。模型输出也是模糊的，不表示对象的具体语义信息，例如这是衣服，这是桌子，这是人，而是仅仅只表示这是一个对象。 模型包括">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/pic/model_diagram.png">
+<meta property="og:image" content="http://example.com/pic/Snipaste_2023-09-09_19-30-39.png">
+<meta property="article:published_time" content="2023-10-04T12:29:29.000Z">
+<meta property="article:modified_time" content="2023-10-04T12:29:58.234Z">
+<meta property="article:author" content="ZM W">
+<meta property="article:tag" content="SAM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/pic/model_diagram.png">
+
+
+<link rel="canonical" href="http://example.com/2023/10/04/Segmentation/SAM/base/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>SAM介绍 | Lover</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lover</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿与你分享我的所有</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sam"><span class="nav-number">1.</span> <span class="nav-text"> SAM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sam%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text"> SAM是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.</span> <span class="nav-text"> 网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.</span> <span class="nav-text"> 数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E7%AD%96%E7%95%A5"><span class="nav-number">1.4.</span> <span class="nav-text"> 训练策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA"><span class="nav-number">1.5.</span> <span class="nav-text"> 代码展示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZM W"
+      src="/images/pikaqiu.png">
+  <p class="site-author-name" itemprop="name">ZM W</p>
+  <div class="site-description" itemprop="description">心之所向，素履以往</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lover-520?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lover-520?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2907266558@qq.com" title="E-Mail → mailto:2907266558@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/Segmentation/SAM/base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pikaqiu.png">
+      <meta itemprop="name" content="ZM W">
+      <meta itemprop="description" content="心之所向，素履以往">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lover">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SAM介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-04 20:29:29 / 修改时间：20:29:58" itemprop="dateCreated datePublished" datetime="2023-10-04T20:29:29+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Segmentation/" itemprop="url" rel="index"><span itemprop="name">Segmentation</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="/* display: none; */">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="sam"><a class="markdownIt-Anchor" href="#sam"></a> SAM</h1>
+<h2 id="sam是什么"><a class="markdownIt-Anchor" href="#sam是什么"></a> SAM是什么</h2>
+<p>SAM(Segment Anything)，能够根据提示语实现目标检测和图像分割。</p>
+<p>零样本任务：<br />
+通过提示输入，生成有效mask。提示可以是点，矩形框，文字，mask或者是图像；</p>
+<h2 id="网络"><a class="markdownIt-Anchor" href="#网络"></a> 网络</h2>
+<p>模型结构：<br />
+模型需要支持灵活的提示，且根据不同的提示实时生成mask。模型输出也是模糊的，不表示对象的具体语义信息，例如这是衣服，这是桌子，这是人，而是仅仅只表示这是一个对象。</p>
+<p>模型包括一个prompt encoder，对提示进行编码，image encoder对图像进行编码，生成图像的embedding表示，最后融合两个encoder，接一个轻量的mask decoder，输出最后的mask结果。</p>
+<p><img src="/pic/model_diagram.png" alt="sam model" /></p>
+<p>image encoder</p>
+<p>利用mae预训练的vit，对每张图像运行一次。图像输入大小(c, h, w)，对图像进行缩放成1024，得到(c, 1024, 1024)的图像，再经过image encoder，得到对图像16倍下采样的特征图，大小为(256, 64, 64)</p>
+<p>prompt encoder</p>
+<p>提示编码器包括两类，稀疏</p>
+<p>稀疏提示被映射到256维矢量嵌入表示，一个点包含点的位置，以及指示该点是在前景中还是背景中；一个框则用嵌入对表示，一个可学习的embedding代表左上角，另一个可学习的embedding代表右下角；文本，则通过CLIP模型进行文本编码；</p>
+<p>稠密提示例如masks，与原图有空间联系；用输入图像1/4分辨率大小的mask，最终维度升为256。mask和image embedding通过element-wise逐元素相乘，相当于采用mask的特征图对image的feature进行加权。如果没有mask prompt的话，就会学习一个代表no mask的embedding。</p>
+<p>mask decoder</p>
+<p><img src="/pic/Snipaste_2023-09-09_19-30-39.png" alt="sam mask decoder" /></p>
+<p>该模块旨在将一组prompt embeddings和image embedding映射为输出掩码。首先在prompt embedding中插入一组可学习的token，为了方便，将除了image embedding之外的所有embeddings称为token。decoder层包含4个步骤：<br />
+1）prompt tokens，output tokens做 self attn；<br />
+2）1）得到的tokens做查询，和image embedding做cross attn；<br />
+3）point-wise MLP更新tokens；<br />
+4）用image embedding作查询，和tokens做cross attn；</p>
+<p>为了保证模型具有模糊性意识，因为有时候，一个prompt，例如一个点，它很有可能处于多个mask中。为了缓解这个问题，相比于直接预测一个mask，采用同时预测多个mask的方法。默认是预测三个mask，whole，part，subpart。训练过程中计算三个mask的损失，但是在梯度回传的时候只回传损失值最小的那个。在应用中，添加了一个head用于评估预测的mask和真值之间的IoU。当有多个prompt时，这种模糊现象就会很少，比如说两个点，多个框之类的，这种情况下预测的多个掩码结果就会很接近，为了最大限度减小损失函数，并且确保单个mask能够正确地进行梯度回传，因此当有多个prompt提供时，仅仅只预测一个mask，在代码中实现方式是添加一个output token用于额外的掩码预测，当只有一个prompt时，这个掩码永远不会返回值；当有多个prompt时，仅返回一个掩码。</p>
+<h2 id="数据"><a class="markdownIt-Anchor" href="#数据"></a> 数据</h2>
+<p>数据总图片数：11M；<br />
+数据掩膜数目：1.1B；<br />
+平均一张图片上的标书数目：100；<br />
+平均图片分辨率：1500 x 2250 pixels</p>
+<h2 id="训练策略"><a class="markdownIt-Anchor" href="#训练策略"></a> 训练策略</h2>
+<p>mask损失函数：20：1的focal loss：dice loss<br />
+IoU预测头：mse loss</p>
+<p>训练过程中，prompt产生的方式模拟交互式分割的方式，从目标mask中随机选取前景点或者box。</p>
+<h2 id="代码展示"><a class="markdownIt-Anchor" href="#代码展示"></a> 代码展示</h2>
+<p>GitHub下载网址：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/segment-anything">SAM</a></p>
+<p>image encoder:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ImageEncoderViT</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        img_size: <span class="built_in">int</span> = <span class="number">1024</span>,</span></span><br><span class="line"><span class="params">        patch_size: <span class="built_in">int</span> = <span class="number">16</span>,</span></span><br><span class="line"><span class="params">        in_chans: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        embed_dim: <span class="built_in">int</span> = <span class="number">768</span>,</span></span><br><span class="line"><span class="params">        depth: <span class="built_in">int</span> = <span class="number">12</span>,</span></span><br><span class="line"><span class="params">        num_heads: <span class="built_in">int</span> = <span class="number">12</span>,</span></span><br><span class="line"><span class="params">        mlp_ratio: <span class="built_in">float</span> = <span class="number">4.0</span>,</span></span><br><span class="line"><span class="params">        out_chans: <span class="built_in">int</span> = <span class="number">256</span>,</span></span><br><span class="line"><span class="params">        qkv_bias: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        norm_layer: <span class="type">Type</span>[nn.Module] = nn.LayerNorm,</span></span><br><span class="line"><span class="params">        act_layer: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">        use_abs_pos: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        use_rel_pos: <span class="built_in">bool</span> = <span class="literal">False</span>,</span></span><br><span class="line"><span class="params">        rel_pos_zero_init: <span class="built_in">bool</span> = <span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        window_size: <span class="built_in">int</span> = <span class="number">0</span>,</span></span><br><span class="line"><span class="params">        global_attn_indexes: <span class="type">Tuple</span>[<span class="built_in">int</span>, ...] = (<span class="params"></span>),</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            img_size (int): Input image size.</span></span><br><span class="line"><span class="string">            patch_size (int): Patch size.</span></span><br><span class="line"><span class="string">            in_chans (int): Number of input image channels.</span></span><br><span class="line"><span class="string">            embed_dim (int): Patch embedding dimension.</span></span><br><span class="line"><span class="string">            depth (int): Depth of ViT.</span></span><br><span class="line"><span class="string">            num_heads (int): Number of attention heads in each ViT block.</span></span><br><span class="line"><span class="string">            mlp_ratio (float): Ratio of mlp hidden dim to embedding dim.</span></span><br><span class="line"><span class="string">            qkv_bias (bool): If True, add a learnable bias to query, key, value.</span></span><br><span class="line"><span class="string">            norm_layer (nn.Module): Normalization layer.</span></span><br><span class="line"><span class="string">            act_layer (nn.Module): Activation layer.</span></span><br><span class="line"><span class="string">            use_abs_pos (bool): If True, use absolute positional embeddings.</span></span><br><span class="line"><span class="string">            use_rel_pos (bool): If True, add relative positional embeddings to the attention map.</span></span><br><span class="line"><span class="string">            rel_pos_zero_init (bool): If True, zero initialize relative positional parameters.</span></span><br><span class="line"><span class="string">            window_size (int): Window size for window attention blocks.</span></span><br><span class="line"><span class="string">            global_attn_indexes (list): Indexes for blocks using global attention.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.img_size = img_size</span><br><span class="line"></span><br><span class="line">        self.patch_embed = PatchEmbed(</span><br><span class="line">            kernel_size=(patch_size, patch_size),</span><br><span class="line">            stride=(patch_size, patch_size),</span><br><span class="line">            in_chans=in_chans,</span><br><span class="line">            embed_dim=embed_dim,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        self.pos_embed: <span class="type">Optional</span>[nn.Parameter] = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> use_abs_pos:</span><br><span class="line">            <span class="comment"># Initialize absolute positional embedding with pretrain image size.</span></span><br><span class="line">            self.pos_embed = nn.Parameter(</span><br><span class="line">                torch.zeros(<span class="number">1</span>, img_size // patch_size, img_size // patch_size, embed_dim)</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        self.blocks = nn.ModuleList()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(depth):</span><br><span class="line">            block = Block(</span><br><span class="line">                dim=embed_dim,</span><br><span class="line">                num_heads=num_heads,</span><br><span class="line">                mlp_ratio=mlp_ratio,</span><br><span class="line">                qkv_bias=qkv_bias,</span><br><span class="line">                norm_layer=norm_layer,</span><br><span class="line">                act_layer=act_layer,</span><br><span class="line">                use_rel_pos=use_rel_pos,</span><br><span class="line">                rel_pos_zero_init=rel_pos_zero_init,</span><br><span class="line">                window_size=window_size <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> global_attn_indexes <span class="keyword">else</span> <span class="number">0</span>,</span><br><span class="line">                input_size=(img_size // patch_size, img_size // patch_size),</span><br><span class="line">            )</span><br><span class="line">            self.blocks.append(block)</span><br><span class="line"></span><br><span class="line">        self.neck = nn.Sequential(</span><br><span class="line">            nn.Conv2d(</span><br><span class="line">                embed_dim,</span><br><span class="line">                out_chans,</span><br><span class="line">                kernel_size=<span class="number">1</span>,</span><br><span class="line">                bias=<span class="literal">False</span>,</span><br><span class="line">            ),</span><br><span class="line">            LayerNorm2d(out_chans),</span><br><span class="line">            nn.Conv2d(</span><br><span class="line">                out_chans,</span><br><span class="line">                out_chans,</span><br><span class="line">                kernel_size=<span class="number">3</span>,</span><br><span class="line">                padding=<span class="number">1</span>,</span><br><span class="line">                bias=<span class="literal">False</span>,</span><br><span class="line">            ),</span><br><span class="line">            LayerNorm2d(out_chans),</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        x = self.patch_embed(x)</span><br><span class="line">        <span class="keyword">if</span> self.pos_embed <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            x = x + self.pos_embed</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> blk <span class="keyword">in</span> self.blocks:</span><br><span class="line">            x = blk(x)</span><br><span class="line"></span><br><span class="line">        x = self.neck(x.permute(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>输入一个[1 3 512 512]的tensor时，image encoder将会得到一个[1 256 32 32]大小的特征图；</p>
+<p>prompt encoder</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PromptEncoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        embed_dim: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        image_embedding_size: <span class="type">Tuple</span>[<span class="built_in">int</span>, <span class="built_in">int</span>],</span></span><br><span class="line"><span class="params">        input_image_size: <span class="type">Tuple</span>[<span class="built_in">int</span>, <span class="built_in">int</span>],</span></span><br><span class="line"><span class="params">        mask_in_chans: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        activation: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Encodes prompts for input to SAM&#x27;s mask decoder.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          embed_dim (int): The prompts&#x27; embedding dimension</span></span><br><span class="line"><span class="string">          image_embedding_size (tuple(int, int)): The spatial size of the</span></span><br><span class="line"><span class="string">            image embedding, as (H, W).</span></span><br><span class="line"><span class="string">          input_image_size (int): The padded size of the image as input</span></span><br><span class="line"><span class="string">            to the image encoder, as (H, W).</span></span><br><span class="line"><span class="string">          mask_in_chans (int): The number of hidden channels used for</span></span><br><span class="line"><span class="string">            encoding input masks.</span></span><br><span class="line"><span class="string">          activation (nn.Module): The activation to use when encoding</span></span><br><span class="line"><span class="string">            input masks.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.embed_dim = embed_dim</span><br><span class="line">        self.input_image_size = input_image_size</span><br><span class="line">        self.image_embedding_size = image_embedding_size</span><br><span class="line">        self.pe_layer = PositionEmbeddingRandom(embed_dim // <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        self.num_point_embeddings: <span class="built_in">int</span> = <span class="number">4</span>  <span class="comment"># pos/neg point + 2 box corners</span></span><br><span class="line">        point_embeddings = [nn.Embedding(<span class="number">1</span>, embed_dim) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.num_point_embeddings)]</span><br><span class="line">        self.point_embeddings = nn.ModuleList(point_embeddings)</span><br><span class="line">        self.not_a_point_embed = nn.Embedding(<span class="number">1</span>, embed_dim)</span><br><span class="line"></span><br><span class="line">        self.mask_input_size = (<span class="number">4</span> * image_embedding_size[<span class="number">0</span>], <span class="number">4</span> * image_embedding_size[<span class="number">1</span>])</span><br><span class="line">        self.mask_downscaling = nn.Sequential(</span><br><span class="line">            nn.Conv2d(<span class="number">1</span>, mask_in_chans // <span class="number">4</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(mask_in_chans // <span class="number">4</span>),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.Conv2d(mask_in_chans // <span class="number">4</span>, mask_in_chans, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(mask_in_chans),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.Conv2d(mask_in_chans, embed_dim, kernel_size=<span class="number">1</span>),</span><br><span class="line">        )</span><br><span class="line">        self.no_mask_embed = nn.Embedding(<span class="number">1</span>, embed_dim)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_dense_pe</span>(<span class="params">self</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns the positional encoding used to encode point prompts,</span></span><br><span class="line"><span class="string">        applied to a dense set of points the shape of the image encoding.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: Positional encoding with shape</span></span><br><span class="line"><span class="string">            1x(embed_dim)x(embedding_h)x(embedding_w)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.pe_layer(self.image_embedding_size).unsqueeze(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_points</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: torch.Tensor,</span></span><br><span class="line"><span class="params">        labels: torch.Tensor,</span></span><br><span class="line"><span class="params">        pad: <span class="built_in">bool</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds point prompts.&quot;&quot;&quot;</span></span><br><span class="line">        points = points + <span class="number">0.5</span>  <span class="comment"># Shift to center of pixel</span></span><br><span class="line">        <span class="keyword">if</span> pad:</span><br><span class="line">            padding_point = torch.zeros((points.shape[<span class="number">0</span>], <span class="number">1</span>, <span class="number">2</span>), device=points.device)</span><br><span class="line">            padding_label = -torch.ones((labels.shape[<span class="number">0</span>], <span class="number">1</span>), device=labels.device)</span><br><span class="line">            points = torch.cat([points, padding_point], dim=<span class="number">1</span>)</span><br><span class="line">            labels = torch.cat([labels, padding_label], dim=<span class="number">1</span>)</span><br><span class="line">        point_embedding = self.pe_layer.forward_with_coords(points, self.input_image_size)</span><br><span class="line">        point_embedding[labels == -<span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">        point_embedding[labels == -<span class="number">1</span>] += self.not_a_point_embed.weight</span><br><span class="line">        point_embedding[labels == <span class="number">0</span>] += self.point_embeddings[<span class="number">0</span>].weight</span><br><span class="line">        point_embedding[labels == <span class="number">1</span>] += self.point_embeddings[<span class="number">1</span>].weight</span><br><span class="line">        <span class="keyword">return</span> point_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_boxes</span>(<span class="params">self, boxes: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds box prompts.&quot;&quot;&quot;</span></span><br><span class="line">        boxes = boxes + <span class="number">0.5</span>  <span class="comment"># Shift to center of pixel</span></span><br><span class="line">        coords = boxes.reshape(-<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        corner_embedding = self.pe_layer.forward_with_coords(coords, self.input_image_size)</span><br><span class="line">        corner_embedding[:, <span class="number">0</span>, :] += self.point_embeddings[<span class="number">2</span>].weight</span><br><span class="line">        corner_embedding[:, <span class="number">1</span>, :] += self.point_embeddings[<span class="number">3</span>].weight</span><br><span class="line">        <span class="keyword">return</span> corner_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_embed_masks</span>(<span class="params">self, masks: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Embeds mask inputs.&quot;&quot;&quot;</span></span><br><span class="line">        mask_embedding = self.mask_downscaling(masks)</span><br><span class="line">        <span class="keyword">return</span> mask_embedding</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_get_batch_size</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: <span class="type">Optional</span>[<span class="type">Tuple</span>[torch.Tensor, torch.Tensor]],</span></span><br><span class="line"><span class="params">        boxes: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">        masks: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Gets the batch size of the output given the batch size of the input prompts.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> points <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> points[<span class="number">0</span>].shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> boxes <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> boxes.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> masks <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> masks.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_get_device</span>(<span class="params">self</span>) -&gt; torch.device:</span><br><span class="line">        <span class="keyword">return</span> self.point_embeddings[<span class="number">0</span>].weight.device</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        points: <span class="type">Optional</span>[<span class="type">Tuple</span>[torch.Tensor, torch.Tensor]],</span></span><br><span class="line"><span class="params">        boxes: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">        masks: <span class="type">Optional</span>[torch.Tensor],</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Tuple</span>[torch.Tensor, torch.Tensor]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Embeds different types of prompts, returning both sparse and dense</span></span><br><span class="line"><span class="string">        embeddings.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          points (tuple(torch.Tensor, torch.Tensor) or none): point coordinates</span></span><br><span class="line"><span class="string">            and labels to embed.</span></span><br><span class="line"><span class="string">          boxes (torch.Tensor or none): boxes to embed</span></span><br><span class="line"><span class="string">          masks (torch.Tensor or none): masks to embed</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: sparse embeddings for the points and boxes, with shape</span></span><br><span class="line"><span class="string">            BxNx(embed_dim), where N is determined by the number of input points</span></span><br><span class="line"><span class="string">            and boxes.</span></span><br><span class="line"><span class="string">          torch.Tensor: dense embeddings for the masks, in the shape</span></span><br><span class="line"><span class="string">            Bx(embed_dim)x(embed_H)x(embed_W)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        bs = self._get_batch_size(points, boxes, masks)</span><br><span class="line">        sparse_embeddings = torch.empty((bs, <span class="number">0</span>, self.embed_dim), device=self._get_device())</span><br><span class="line">        <span class="keyword">if</span> points <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            coords, labels = points</span><br><span class="line">            point_embeddings = self._embed_points(coords, labels, pad=(boxes <span class="keyword">is</span> <span class="literal">None</span>))</span><br><span class="line">            sparse_embeddings = torch.cat([sparse_embeddings, point_embeddings], dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> boxes <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            box_embeddings = self._embed_boxes(boxes)</span><br><span class="line">            sparse_embeddings = torch.cat([sparse_embeddings, box_embeddings], dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> masks <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            dense_embeddings = self._embed_masks(masks)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            dense_embeddings = self.no_mask_embed.weight.reshape(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).expand(</span><br><span class="line">                bs, -<span class="number">1</span>, self.image_embedding_size[<span class="number">0</span>], self.image_embedding_size[<span class="number">1</span>]</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sparse_embeddings, dense_embeddings</span><br></pre></td></tr></table></figure>
+<p>对点、边框、掩膜分别生成稀疏表示、密集表示；</p>
+<p>mask encoder</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MaskDecoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        *,</span></span><br><span class="line"><span class="params">        transformer_dim: <span class="built_in">int</span>,</span></span><br><span class="line"><span class="params">        transformer: nn.Module,</span></span><br><span class="line"><span class="params">        num_multimask_outputs: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        activation: <span class="type">Type</span>[nn.Module] = nn.GELU,</span></span><br><span class="line"><span class="params">        iou_head_depth: <span class="built_in">int</span> = <span class="number">3</span>,</span></span><br><span class="line"><span class="params">        iou_head_hidden_dim: <span class="built_in">int</span> = <span class="number">256</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Predicts masks given an image and prompt embeddings, using a</span></span><br><span class="line"><span class="string">        transformer architecture.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          transformer_dim (int): the channel dimension of the transformer</span></span><br><span class="line"><span class="string">          transformer (nn.Module): the transformer used to predict masks</span></span><br><span class="line"><span class="string">          num_multimask_outputs (int): the number of masks to predict</span></span><br><span class="line"><span class="string">            when disambiguating masks</span></span><br><span class="line"><span class="string">          activation (nn.Module): the type of activation to use when</span></span><br><span class="line"><span class="string">            upscaling masks</span></span><br><span class="line"><span class="string">          iou_head_depth (int): the depth of the MLP used to predict</span></span><br><span class="line"><span class="string">            mask quality</span></span><br><span class="line"><span class="string">          iou_head_hidden_dim (int): the hidden dimension of the MLP</span></span><br><span class="line"><span class="string">            used to predict mask quality</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.transformer_dim = transformer_dim</span><br><span class="line">        self.transformer = transformer</span><br><span class="line"></span><br><span class="line">        self.num_multimask_outputs = num_multimask_outputs</span><br><span class="line"></span><br><span class="line">        self.iou_token = nn.Embedding(<span class="number">1</span>, transformer_dim)</span><br><span class="line">        self.num_mask_tokens = num_multimask_outputs + <span class="number">1</span></span><br><span class="line">        self.mask_tokens = nn.Embedding(self.num_mask_tokens, transformer_dim)</span><br><span class="line"></span><br><span class="line">        self.output_upscaling = nn.Sequential(</span><br><span class="line">            nn.ConvTranspose2d(transformer_dim, transformer_dim // <span class="number">4</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            LayerNorm2d(transformer_dim // <span class="number">4</span>),</span><br><span class="line">            activation(),</span><br><span class="line">            nn.ConvTranspose2d(transformer_dim // <span class="number">4</span>, transformer_dim // <span class="number">8</span>, kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>),</span><br><span class="line">            activation(),</span><br><span class="line">        )</span><br><span class="line">        self.output_hypernetworks_mlps = nn.ModuleList(</span><br><span class="line">            [</span><br><span class="line">                MLP(transformer_dim, transformer_dim, transformer_dim // <span class="number">8</span>, <span class="number">3</span>)</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.num_mask_tokens)</span><br><span class="line">            ]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        self.iou_prediction_head = MLP(</span><br><span class="line">            transformer_dim, iou_head_hidden_dim, self.num_mask_tokens, iou_head_depth</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        image_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        image_pe: torch.Tensor,</span></span><br><span class="line"><span class="params">        sparse_prompt_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        dense_prompt_embeddings: torch.Tensor,</span></span><br><span class="line"><span class="params">        multimask_output: <span class="built_in">bool</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Tuple</span>[torch.Tensor, torch.Tensor]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Predict masks given image and prompt embeddings.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">          image_embeddings (torch.Tensor): the embeddings from the image encoder</span></span><br><span class="line"><span class="string">          image_pe (torch.Tensor): positional encoding with the shape of image_embeddings</span></span><br><span class="line"><span class="string">          sparse_prompt_embeddings (torch.Tensor): the embeddings of the points and boxes</span></span><br><span class="line"><span class="string">          dense_prompt_embeddings (torch.Tensor): the embeddings of the mask inputs</span></span><br><span class="line"><span class="string">          multimask_output (bool): Whether to return multiple masks or a single</span></span><br><span class="line"><span class="string">            mask.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">          torch.Tensor: batched predicted masks</span></span><br><span class="line"><span class="string">          torch.Tensor: batched predictions of mask quality</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        masks, iou_pred = self.predict_masks(</span><br><span class="line">            image_embeddings=image_embeddings,</span><br><span class="line">            image_pe=image_pe,</span><br><span class="line">            sparse_prompt_embeddings=sparse_prompt_embeddings,</span><br><span class="line">            dense_prompt_embeddings=dense_prompt_embeddings,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Select the correct mask or masks for output</span></span><br><span class="line">        <span class="keyword">if</span> multimask_output:</span><br><span class="line">            mask_slice = <span class="built_in">slice</span>(<span class="number">1</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            mask_slice = <span class="built_in">slice</span>(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        masks = masks[:, mask_slice, :, :]</span><br><span class="line">        iou_pred = iou_pred[:, mask_slice]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Prepare output</span></span><br><span class="line">        <span class="keyword">return</span> masks, iou_pred</span><br></pre></td></tr></table></figure>
+<p>生成最终预测结果</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>（1）SAM的结构，图像编码，提示编码，轻量掩码解码；结构还是挺清楚的；<br />
+（2）SAM的微调，还得看看RSPrompter的新结构；</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SAM/" rel="tag"># SAM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/04/Segmentation/SAM/sam-adaptor/" rel="prev" title="SAM-Adapter介绍">
+                  <i class="fa fa-chevron-left"></i> SAM-Adapter介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZM W</span>
+</div>
+<div class="busuanzi-count">
+
+<script async src="/js/src/busuanzi.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript" color="255,0,255" opacity='0.5' zIndex="-2" count="100" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>
