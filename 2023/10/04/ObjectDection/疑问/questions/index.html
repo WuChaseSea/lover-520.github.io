@@ -23,20 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="PytorchLightning 基本使用  hook使用顺序 PytorchLightning的最初使用日常修改只需要自定义其中一部分函数即可，包含但不限于：  training_epoch_end training_step training_step_end validation_epoch_end validation_step validation_step_end  在训练过程中，一">
+<meta name="description" content="目标检测一些疑问笔记。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Lover">
-<meta property="og:url" content="http://example.com/2023/03/24/PytorchLightning/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/index.html">
+<meta property="og:title" content="目标检测一些疑问">
+<meta property="og:url" content="http://example.com/2023/10/04/ObjectDection/%E7%96%91%E9%97%AE/questions/index.html">
 <meta property="og:site_name" content="Lover">
-<meta property="og:description" content="PytorchLightning 基本使用  hook使用顺序 PytorchLightning的最初使用日常修改只需要自定义其中一部分函数即可，包含但不限于：  training_epoch_end training_step training_step_end validation_epoch_end validation_step validation_step_end  在训练过程中，一">
+<meta property="og:description" content="目标检测一些疑问笔记。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-23T16:25:12.426Z">
-<meta property="article:modified_time" content="2023-03-23T16:25:12.426Z">
+<meta property="article:published_time" content="2023-10-04T12:23:32.000Z">
+<meta property="article:modified_time" content="2023-10-04T12:52:28.648Z">
 <meta property="article:author" content="ZM W">
+<meta property="article:tag" content="ObjectDetection">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2023/03/24/PytorchLightning/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
+<link rel="canonical" href="http://example.com/2023/10/04/ObjectDection/%E7%96%91%E9%97%AE/questions/">
 
 
 <script class="page-configurations">
@@ -48,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title> | Lover</title>
+<title>目标检测一些疑问 | Lover</title>
   
 
 
@@ -131,8 +132,8 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li>
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
@@ -165,7 +166,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorchlightning-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text"> PytorchLightning 基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hook%E4%BD%BF%E7%94%A8%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> hook使用顺序</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#object-detection-questions"><span class="nav-number">1.</span> <span class="nav-text"> Object Detection Questions</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -188,13 +189,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -242,7 +243,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/24/PytorchLightning/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/04/ObjectDection/%E7%96%91%E9%97%AE/questions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/pikaqiu.png">
@@ -255,7 +256,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          目标检测一些疑问
         </h1>
 
         <div class="post-meta-container">
@@ -265,8 +266,18 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-03-24 00:25:12" itemprop="dateCreated datePublished" datetime="2023-03-24T00:25:12+08:00">2023-03-24</time>
+      <time title="创建时间：2023-10-04 20:23:32 / 修改时间：20:52:28" itemprop="dateCreated datePublished" datetime="2023-10-04T20:23:32+08:00">2023-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ObjectDetection/" itemprop="url" rel="index"><span itemprop="name">ObjectDetection</span></a>
+        </span>
     </span>
 
   
@@ -288,19 +299,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="pytorchlightning-基本使用"><a class="markdownIt-Anchor" href="#pytorchlightning-基本使用"></a> PytorchLightning 基本使用</h1>
-<h2 id="hook使用顺序"><a class="markdownIt-Anchor" href="#hook使用顺序"></a> hook使用顺序</h2>
-<p>PytorchLightning的最初使用日常修改只需要自定义其中一部分函数即可，包含但不限于：</p>
-<ul>
-<li>training_epoch_end</li>
-<li>training_step</li>
-<li>training_step_end</li>
-<li>validation_epoch_end</li>
-<li>validation_step</li>
-<li>validation_step_end</li>
-</ul>
-<p>在训练过程中，一般都会定义一个类继承自pl.LightningModule，然后重写里面的函数；</p>
-<p>training_step函数对batch进行预测，返回一个loss；并将该loss作为training_step_end的输入；</p>
+        <p>目标检测一些疑问笔记。<a id="more"></a></p>
+<h1 id="object-detection-questions"><a class="markdownIt-Anchor" href="#object-detection-questions"></a> Object Detection Questions</h1>
+<p><strong>question</strong>：目标检测样本是否需要统一大小？coco128中也不是所有图片都是长宽固定的图片；</p>
 
     </div>
 
@@ -309,18 +310,21 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ObjectDetection/" rel="tag"># ObjectDetection</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/03/18/Transformer/SwinTransformer/Noted/" rel="prev" title="Swin Transformer代码记录">
-                  <i class="fa fa-chevron-left"></i> Swin Transformer代码记录
+                <a href="/2023/10/04/ObjectDection/%E7%AC%94%E8%AE%B0/%E5%88%9D%E8%AF%86yolo/" rel="prev" title="目标检测YOLO系列">
+                  <i class="fa fa-chevron-left"></i> 目标检测YOLO系列
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/03/25/SuperResolution/%E6%8C%87%E6%A0%87/metrics/" rel="next" title="超分辨率指标">
-                  超分辨率指标 <i class="fa fa-chevron-right"></i>
+                <a href="/2023/10/04/Pytorch/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/base/" rel="next" title="Pytorch常见问题">
+                  Pytorch常见问题 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>

@@ -23,17 +23,17 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="TransGAN  意义 Transformer在分类、分割和检测中已经成为一个通用模型；本文尝试探索Transformer在计算机视觉困难任务上的应用，尝试构建一个完全无卷积的GAN网络结构。  网络结构   Generator 生成器采用分阶段逐步提升分辨率生成图像的过程。  Discrminator 判别器的目的是区分图片的真假，该结构中采用一种多尺度的结构，在不用阶段以不同的图像块作为输">
+<meta name="description" content="初识生成对抗网络TransGAN。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="生成对抗网络TransGAN">
 <meta property="og:url" content="http://example.com/2023/10/04/GAN/TransGAN/Notes/index.html">
 <meta property="og:site_name" content="Lover">
-<meta property="og:description" content="TransGAN  意义 Transformer在分类、分割和检测中已经成为一个通用模型；本文尝试探索Transformer在计算机视觉困难任务上的应用，尝试构建一个完全无卷积的GAN网络结构。  网络结构   Generator 生成器采用分阶段逐步提升分辨率生成图像的过程。  Discrminator 判别器的目的是区分图片的真假，该结构中采用一种多尺度的结构，在不用阶段以不同的图像块作为输">
+<meta property="og:description" content="初识生成对抗网络TransGAN。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/pic/Snipaste_2023-01-02_13-32-50.png">
 <meta property="og:image" content="http://example.com/pic/Snipaste_2023-01-02_15-29-20.png">
 <meta property="article:published_time" content="2023-10-04T12:14:11.000Z">
-<meta property="article:modified_time" content="2023-10-04T12:14:34.372Z">
+<meta property="article:modified_time" content="2023-10-04T12:50:18.792Z">
 <meta property="article:author" content="ZM W">
 <meta property="article:tag" content="TransGAN">
 <meta name="twitter:card" content="summary">
@@ -135,8 +135,8 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li>
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
         <li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
   </ul>
@@ -192,13 +192,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -271,7 +271,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-10-04 20:14:11 / 修改时间：20:14:34" itemprop="dateCreated datePublished" datetime="2023-10-04T20:14:11+08:00">2023-10-04</time>
+      <time title="创建时间：2023-10-04 20:14:11 / 修改时间：20:50:18" itemprop="dateCreated datePublished" datetime="2023-10-04T20:14:11+08:00">2023-10-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -302,7 +302,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="transgan"><a class="markdownIt-Anchor" href="#transgan"></a> TransGAN</h1>
+        <p>初识生成对抗网络TransGAN。<a id="more"></a></p>
+<h1 id="transgan"><a class="markdownIt-Anchor" href="#transgan"></a> TransGAN</h1>
 <h2 id="意义"><a class="markdownIt-Anchor" href="#意义"></a> 意义</h2>
 <p>Transformer在分类、分割和检测中已经成为一个通用模型；本文尝试探索Transformer在计算机视觉困难任务上的应用，<strong>尝试构建一个完全无卷积的GAN网络结构</strong>。</p>
 <h2 id="网络结构"><a class="markdownIt-Anchor" href="#网络结构"></a> 网络结构</h2>
